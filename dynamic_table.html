@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>TABELLA DINAMICA</title>
+<style>
+table.tabella{
+	border: transparent;
+    margin-left:auto; 
+    margin-right:auto;
+}
+table.tabella th{
+	background-color : rgb(41,44,47);
+	font-size : 16px;
+    font-family: sans-serif;
+	color : white;
+	padding : 2px;
+}
+table.tabella td{
+	background-color : cyan;
+	color : back;
+	padding : 2px;
+}
+</style>
+
+<script type='text/javascript'>
+//- Preleviamo il riferimento alla tabella e al tbody
+  // - Calcoliamo il numero di colonne presenti
+  // - Cicliamo e per ogni cella nuova chiediamo da prompt il testo
+   //- Nidifichiamo il testo nel td e il td nel tr
+   //- Aggiungiamo la nuova riga tr nel tbody
+
+
+function aggiungiRiga(id_table){
+	var table = document.getElementById(id_table);
+	var tbody = table.getElementsByTagName('tbody')[0];
+	var colonne = table.getElementsByTagName('th').length;	
+	var tr = document.createElement('tr');
+	for(var i=0; i<colonne; i++){
+		var td = document.createElement('td');
+		var tx = document.createTextNode(prompt("Inserisci testo per cella "+(i+1),""));
+		td.appendChild(tx);
+		tr.appendChild(td);
+	}
+	tbody.appendChild(tr);
+}
+</script>
+
+</head>
+
+<body>
+<div style="text-align: center;">
+	<table border='2' id='my_table' class='tabella' cellspacing='3' cellpadding='0'>
+	<thead><tr><th>INTESTAZIONE COLONNA 1</th><th>INTESTAZIONE COLONNA 2</th><th>INTESTAZIONE COLONNA 3</th><th>INTESTAZIONE COLONNA 3</th><th>INTESTAZIONE COLONNA 3</th></tr></thead>
+	<tbody>
+	
+	</tbody>
+	</table></div><br/>
+	<input type='button' value='Aggiungi riga' onClick="aggiungiRiga('my_table')" style="display: block; margin: 0 auto;" />
+</body>
+
+</html>

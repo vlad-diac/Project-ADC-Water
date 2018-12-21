@@ -1,0 +1,16 @@
+.add {
+  background: rgba(41,44,47);
+  padding: 20px;
+  font-size: 18px;
+  font-family: bitter;
+  color: #fff;
+  border: none;
+  border-radius: 300px;
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
