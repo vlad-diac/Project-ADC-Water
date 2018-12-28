@@ -14,6 +14,29 @@
     <link rel="stylesheet" href="assets/css/Pretty-Footer.css">
     <link rel="stylesheet" href="assets/css/Rounded-Button.css">
     <link rel="stylesheet" href="assets/css/styles.css">
+  
+<script type='text/javascript'>
+//- Preleviamo il riferimento alla tabella e al tbody
+  // - Calcoliamo il numero di colonne presenti
+  // - Cicliamo e per ogni cella nuova chiediamo da prompt il testo
+   //- Nidifichiamo il testo nel td e il td nel tr
+   //- Aggiungiamo la nuova riga tr nel tbody
+
+
+function aggiungiRiga(id_table){
+	var table = document.getElementById(id_table);
+	var tbody = table.getElementsByTagName('tbody')[0];
+	var colonne = table.getElementsByTagName('th').length;	
+	var tr = document.createElement('tr');
+	for(var i=0; i<colonne; i++){
+		var td = document.createElement('td');
+		var tx = document.createTextNode(prompt("Inserisci testo per cella "+(i+1),""));
+		td.appendChild(tx);
+		tr.appendChild(td);
+	}
+	tbody.appendChild(tr);
+}
+</script>
 </head>
 
 <body>
@@ -33,7 +56,7 @@
                         </ul>
                         <form class="form-inline mr-auto" target="_self">
                             
-                        </form><span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" href="inizio.html" style="font-family: Bitter, serif;background-color: rgb(255,0,0);">ESCI</a></div>
+                        </form><span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" href="index.php?exit=ex" style="font-family: Bitter, serif;background-color: rgb(255,0,0); ">ESCI</a></div>
         </div>
         </nav>
         <div class="container hero" style="margin-top: 5px;">
@@ -43,53 +66,51 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div style="width: 100%;">
+        <div style="text-align: center; margin: 0 auto; width: 900px"> <div style="text-align:center;">
+            <h2 class="divider-style" style="color: rgb(255,255,255);margin-top: 20px;margin-bottom: 10px;"><span style="color: rgb(255,255,255);font-family: Bitter, serif;background-color: #292c2f;padding-left: 5px;padding-right: 5px;">Inserisci i Sottoutenti della Fattura</span></h2>
+            </div>
+       </div>
+       </div>
+        <div class="row" style="width: 100%;">
             <div class="col">
-                <div style="text-align:center;"></div>
+            <div>
+                <div style="text-align: center; width:auto;">
+	<table border=" 1px black " id="my_table" class="tabella" >
+	<thead><tr><th style="width:200px;">NOME</th><th>NUMERO PERSONE</th><th>LETTURA PRECEDENTE (mc)</th><th>LETTURA ATTUALE (mc)</th><th>CONSUMO DEL PERIODO (mc)</th><th>IMPORTI VERSATI €</th></tr></thead>
+	<tbody>
+	
+	</tbody>
+	</table></div><br/>
+	<input type='button' class="add" value='Aggiungi riga' onClick="aggiungiRiga('my_table')" style="display: block; margin: 0 auto;" />
+            </div>
+            <br/>
+    <div>
+       <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" style="background:green;">AVANTI</button></div>
+                <div class="col-md-4"></div>
             </div>
         </div>
-        <div class="row" style="margin: 30px;">
-            <div class="col"></div>
-            <div class="col">
-                <div><a class="btn btn-primary btn-lg d-flex justify-content-lg-center" role="button" href="#myModal" data-toggle="modal" style="margin: 10px;color: rgb(41,44,47);background-color: rgb(255,255,255);font-family: Bitter, serif;">Utilizza un Condominio Archiviato</a>
-                    <div
-                        class="modal fade" role="dialog" tabindex="-1" id="myModal">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4>Modal Title</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
-                                <div class="modal-body">
-                                    <p class="text-center text-muted">Description </p>
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
-                            </div>
-                        </div>
-                </div>
-            </div>
-            <div><a class="btn btn-primary btn-lg d-flex d-lg-flex justify-content-lg-center" role="button" href="#myModal" data-toggle="modal" style="margin: 10px;color: rgb(41,44,47);background-color: rgb(255,255,255);font-family: Bitter, serif;">Utilizza un Nuovo Condominio</a>
-                <div
-                    class="modal fade" role="dialog" tabindex="-1" id="myModal">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4>Modal Title</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
-                            <div class="modal-body">
-                                <p class="text-center text-muted">Description </p>
-                            </div>
-                            <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
-                        </div>
-                    </div>
+        </div>
+        <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" style="background:red;">INDIETRO</button></div>
+                <div class="col-md-4"></div>
             </div>
         </div>
-    </div>
-    <div class="col"></div>
-    </div>
-    <div class="row">
-        <div class="col"></div>
-        <div class="col"></div>
-        <div class="col"></div>
-        <div class="col"></div>
-    </div>
+        </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+           </div>
+            </div>
+        </div>
+        
+    
     </div>
     </div>
     <div></div>

@@ -1,3 +1,17 @@
+<?php 
+require("./connection_database.php");
+session_start();
+
+$_SESSION['condominio_in_uso'] = null; // prenderà il valore (nome) del condomio usato
+if($_SESSION['accreditato'] == false){ // controllo se sia loggato
+    
+    header("Location: ./index.php");
+}
+
+$contenuto = '';
+$partizioni_create = 0;
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -21,8 +35,8 @@
         <div class="header-dark" style="padding: 0PX 0PX 10PX;">
             <nav class="navbar navbar-dark navbar-expand-md navigation-clean-search">
                 <div class="container"><a class="navbar-brand" href="#" style="font-family: Bitter, serif;">AccadueCo</a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-                    <div
-                        class="collapse navbar-collapse" id="navcol-1">
+                    <form method="post" action='<?php echo $_SERVER['PHP_SELF']; ?>'>
+                    <div class="collapse navbar-collapse" id="navcol-1">
                         <ul class="nav navbar-nav">
                             <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;">Home</a></li>
                             <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;">Manuale</a></li>
@@ -31,9 +45,7 @@
                             <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;color: rgb(255,0,0);">Abbonamenti</a></li>
                             <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;color: rgb(255,0,0);">Contattaci</a></li>
                         </ul>
-                        <form class="form-inline mr-auto" target="_self">
-                            
-                        </form><span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" href="inizio.html" style="font-family: Bitter, serif;background-color: rgb(255,0,0);">ESCI</a></div>
+                      <span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" style="font-family: Bitter, serif;background-color: rgb(255,0,0);" name="btn_exit" href="index.php?exit=ex">ESCI</a></div></form>
         </div>
         </nav>
         <div class="container hero" style="margin-top: 5px;">
@@ -51,7 +63,75 @@
         <div class="row" style="margin: 30px;">
             <div class="col"></div>
             <div class="col">
-                <div><a class="btn btn-primary btn-lg d-flex justify-content-lg-center" role="button" href="#myModal" data-toggle="modal" style="margin: 10px;color: rgb(41,44,47);background-color: rgb(255,255,255);font-family: Bitter, serif;">Inizia una Nuova Ripartizione</a>
+               
+            <?php
+             
+                $id = $_SESSION['ID'];
+                // controllo se esiste già una ripartizioni 
+                $statment = connect("test")->prepare("SELECT * FROM partizioni WHERE id = :id LIMIT 1");
+                $statment->bindValue(':id',$id, PDO::PARAM_STR);
+                $statment->execute();
+                if ($statment->rowCount() != 0){
+
+                    $data = $statment->fetch(PDO::FETCH_ASSOC);
+                    $partizioni_create = $data['numeroPartizioni'];
+
+                }
+                if($partizioni_create == 0){
+                    $contenuto .= ' <div><a class="btn btn-primary btn-lg d-flex justify-content-lg-center" role="button" href="#myModal" data-toggle="modal" style="margin: 10px;color: rgb(41,44,47);background-color: rgb(255,255,255);font-family: Bitter, serif;">Inizia una Nuova Ripartizione</a>';
+                    
+                     // controllo se ha già inserito qualche condiminio
+                    $statment_condomio = connect("test")->prepare("SELECT * FROM condomini WHERE id_assoc = :id LIMIT 1");
+                    $statment_condomio->bindValue(':id',$id, PDO::PARAM_STR);
+                    $statment_condomio->execute();
+                    if ($statment_condomio->rowCount() != 0){ // se esiste già un dondominio
+
+                        $contenuto .= '<div   class="modal fade" role="dialog" tabindex="-1" id="myModal">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4>Scegli il condomio da utilizzare</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                                <div class="modal-body">
+                                    ';
+                        // controllo quante ne ha di condomini e gli e li faccio vedere tutti
+                        $statment_condomio = connect("test")->query("SELECT * FROM condomini WHERE id_assoc = '".$id."'");
+                      
+                        while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
+                            $contenuto .= '<input type="submit" class="btn btn-success" style="width: 100%;" value='.$rows[1].' ><br> 
+                            <br>
+                            ';
+                        }
+                        $contenuto .= '
+                                </div>
+                                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
+                            </div>
+                        </div>
+                </div>
+            </div>';
+
+                    }else{ // altrimenti gli dico che deve crearli
+                        
+                        $contenuto .= '<div   class="modal fade" role="dialog" tabindex="-1" id="myModal">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4>Sistema</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                                <div class="modal-body">
+                                    <p class="text-center text-muted">Per poter creare una ripartizione bisogna inserire nel sistema i dati di almeno un condomio su cui elaborare i dati </p>
+                                </div>
+                                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><a href="creaCondominio.php"> <button class="btn btn-primary" type="button">Prosegui</button> </a> </div>
+                            </div>
+                        </div>
+                </div>
+            </div>';
+                    }
+
+                   
+                    
+                    echo $contenuto;
+                }else {
+                   
+                    $contenuto .= ' <div><a class="btn btn-primary btn-lg d-flex justify-content-lg-center" role="button" href="#myModal" data-toggle="modal" style="margin: 10px;color: rgb(41,44,47);background-color: rgb(255,255,255);font-family: Bitter, serif;">Inizia una Nuova Ripartizione</a>
                     <div
                         class="modal fade" role="dialog" tabindex="-1" id="myModal">
                         <div class="modal-dialog" role="document">
@@ -66,21 +146,32 @@
                         </div>
                 </div>
             </div>
-            <div><a class="btn btn-primary btn-lg d-flex d-lg-flex justify-content-lg-center" role="button" href="#myModal" data-toggle="modal" style="margin: 10px;color: rgb(41,44,47);background-color: rgb(255,255,255);font-family: Bitter, serif;">Apri una Ripartizione già Creata</a>
-                <div
-                    class="modal fade" role="dialog" tabindex="-1" id="myModal">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4>Modal Title</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
-                            <div class="modal-body">
-                                <p class="text-center text-muted">Description </p>
+
+            <div><a class="btn btn-primary btn-lg d-flex justify-content-lg-center" role="button" href="#myModal" data-toggle="modal" style="margin: 10px;color: rgb(41,44,47);background-color: rgb(255,255,255);font-family: Bitter, serif;">Apri una ripartizione già esistente</a>
+                    <div
+                        class="modal fade" role="dialog" tabindex="-1" id="myModal">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4>Modal Title</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                                <div class="modal-body">
+                                    <p class="text-center text-muted">Description </p>
+                                </div>
+                                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
                             </div>
-                            <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
                         </div>
-                    </div>
-            </div>
-        </div>
+                </div>
+            </div>';
+
+
+                    echo $contenuto;
+                    
+                }
+
+                
+                
+                ?>
+        
     </div>
     <div class="col"></div>
     </div>

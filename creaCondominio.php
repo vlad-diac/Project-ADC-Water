@@ -1,3 +1,44 @@
+<?php 
+require("./connection_database.php");
+session_start();
+$error = 0;
+if($_SESSION['accreditato'] == false){ // controllo se sia loggato
+
+    header("Location: ./datiUtentiCondominio.php");
+}
+
+if(isset($_POST['btn_next'])){ // pulsante avanti
+    
+    $id_utente = $_SESSION['ID'];
+    $nome_cond = $_POST['input_nome_condominio']; 
+    $citta_cond = $_POST['input_citta'];
+    
+    if($nome_cond != null and $citta_cond != null){
+        //AGGIUNGERE UN CONTROLLO CHE VERIFICHI CHE IL CONDOMINIO INSERITO NON ESISTA GIA' NEL SISTEMA
+        //AGGIUNGERE UN CONTROLLO CHE VERIFICHI CHE IL CONDOMINIO INSERITO NON ESISTA GIA' NEL SISTEMA
+        //AGGIUNGERE UN CONTROLLO CHE VERIFICHI CHE IL CONDOMINIO INSERITO NON ESISTA GIA' NEL SISTEMA
+        //AGGIUNGERE UN CONTROLLO CHE VERIFICHI CHE IL CONDOMINIO INSERITO NON ESISTA GIA' NEL SISTEMA
+        $statment_partizioni = connect("test")->prepare("INSERT INTO condomini (nome,citta,id_assoc) VALUES (?,?,?)");
+
+        $statment_partizioni->execute([
+           
+            $nome_cond,
+            $citta_cond ,
+            $id_utente
+        ]);
+        
+        header("Location: ./4.html");  
+    }else{
+        
+        $error = 1;
+    }
+
+}
+?>
+
+<!DOCTYPE html>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -14,32 +55,10 @@
     <link rel="stylesheet" href="assets/css/Pretty-Footer.css">
     <link rel="stylesheet" href="assets/css/Rounded-Button.css">
     <link rel="stylesheet" href="assets/css/styles.css">
-  
-<script type='text/javascript'>
-//- Preleviamo il riferimento alla tabella e al tbody
-  // - Calcoliamo il numero di colonne presenti
-  // - Cicliamo e per ogni cella nuova chiediamo da prompt il testo
-   //- Nidifichiamo il testo nel td e il td nel tr
-   //- Aggiungiamo la nuova riga tr nel tbody
-
-
-function aggiungiRiga(id_table){
-	var table = document.getElementById(id_table);
-	var tbody = table.getElementsByTagName('tbody')[0];
-	var colonne = table.getElementsByTagName('th').length;	
-	var tr = document.createElement('tr');
-	for(var i=0; i<colonne; i++){
-		var td = document.createElement('td');
-		var tx = document.createTextNode(prompt("Inserisci testo per cella "+(i+1),""));
-		td.appendChild(tx);
-		tr.appendChild(td);
-	}
-	tbody.appendChild(tr);
-}
-</script>
 </head>
 
 <body>
+  <form method="post" action='<?php echo $_SERVER['PHP_SELF']; ?>'>
     <div>
         <div class="header-dark" style="padding: 0PX 0PX 10PX;">
             <nav class="navbar navbar-dark navbar-expand-md navigation-clean-search">
@@ -56,7 +75,7 @@ function aggiungiRiga(id_table){
                         </ul>
                         <form class="form-inline mr-auto" target="_self">
                             
-                        </form><span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" href="inizio.html" style="font-family: Bitter, serif;background-color: rgb(255,0,0);">ESCI</a></div>
+                        </form><span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" href="index.php?exit=ex" style="font-family: Bitter, serif;background-color: rgb(255,0,0);">ESCI</a></div>
         </div>
         </nav>
         <div class="container hero" style="margin-top: 5px;">
@@ -66,36 +85,52 @@ function aggiungiRiga(id_table){
                 </div>
             </div>
         </div>
-        <div style="width: 100%;">
         <div style="text-align: center; margin: 0 auto; width: 900px"> <div style="text-align:center;">
-            <h2 class="divider-style" style="color: rgb(255,255,255);margin-top: 20px;margin-bottom: 10px;"><span style="color: rgb(255,255,255);font-family: Bitter, serif;background-color: #292c2f;padding-left: 5px;padding-right: 5px;">Inserisci i Sottoutenti della Fattura</span></h2>
-            </div>
+            <h2 class="divider-style" style="color: rgb(255,255,255);margin-top: 20px;margin-bottom: 10px;"><span style="color: rgb(255,255,255);font-family: Bitter, serif;background-color: #292c2f;padding-left: 5px;padding-right: 5px;">Inserisci i Dati del Nuovo Condominio</span></h2>
+            </div> 
+            <?php 
+            
+            if($error == 1){echo "<p style='color:red;'>Inserisci tutti i dati prima di continuare</p>"; $error=0;} // msg di errore
+                    
+                            
+             ?>
        </div>
-       </div>
-        <div class="row" style="width: 100%;">
+        <div class="row">
             <div class="col">
-            <div>
-                <div style="text-align: center; width:auto;">
-	<table border=" 1px black " id="my_table" class="tabella" >
-	<thead><tr><th style="width:200px;">NOME</th><th>NUMERO PERSONE</th><th>LETTURA PRECEDENTE (mc)</th><th>LETTURA ATTUALE (mc)</th><th>CONSUMO DEL PERIODO (mc)</th><th>IMPORTI VERSATI €</th></tr></thead>
-	<tbody>
-	
-	</tbody>
-	</table></div><br/>
-	<input type='button' class="add" value='Aggiungi riga' onClick="aggiungiRiga('my_table')" style="display: block; margin: 0 auto;" />
+                <div><div style="margin-top: 10px;margin-bottom: 10px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="text-center" style="margin-top: 10px;margin-bottom: 10px;"><a class="btn btn-primary btn-lg" role="button" href="#myModal" data-toggle="modal" style="font-size: 25px;background-color: rgb(255,255,255);color: rgb(0,0,0);">NOME CONDOMINIO</a>
+                       
+                    </div>
+                </div>
+                <div class="col-md-6 text-center" style="margin-top: 10px;margin-bottom: 10px;"><input class="form-control-lg" type="text" placeholder="ES: Montevideo 22" name="input_nome_condominio" style="height: 54.8px;"></div>
             </div>
-            <br/>
+        </div>
+    </div>
+    <div style="margin-top: 10px;margin-bottom: 10px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="text-center" style="margin-top: 10px;"><a class="btn btn-primary btn-lg" role="button" href="#myModal" data-toggle="modal" style="font-size: 25px;color: rgb(0,0,0);background-color: rgb(255,255,255);">CITTÀ&nbsp;DI UBICAZIONE</a>
+                       
+                    </div>
+                </div>
+                <div class="col-md-6 text-center" style="margin-top: 10px;margin-bottom: 10px;"><input name="input_citta" class="form-control-lg" type="text" placeholder="ES: Torino" style="height: 54.8px;"></div>
+            </div>
+        </div>
+    </div>
     <div>
-       <div>
         <div class="container">
             <div class="row">
                 <div class="col-md-4"></div>
-                <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" style="background:green;">AVANTI</button></div>
+                <div class="col-md-4 d-xl-flex align-items-xl-center"> <input class="add" name="btn_next" type="submit" value="AVANTI" style="background:green;"></div>
                 <div class="col-md-4"></div>
             </div>
         </div>
-        </div>
-        <div>
+    </div>
+    <div>
         <div class="container">
             <div class="row">
                 <div class="col-md-4"></div>
@@ -103,10 +138,9 @@ function aggiungiRiga(id_table){
                 <div class="col-md-4"></div>
             </div>
         </div>
-        </div>
+    </div>
     <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-           </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script></div>
             </div>
         </div>
         
@@ -114,6 +148,7 @@ function aggiungiRiga(id_table){
     </div>
     </div>
     <div></div>
+    </form>
     <footer style="margin: 0;">
         <div class="row">
             <div class="col-sm-6 col-md-4 footer-navigation">
