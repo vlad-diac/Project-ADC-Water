@@ -8,7 +8,10 @@ if($_SESSION['accreditato'] == false and $_SESSION['registrato'] == false){
     
 }
 
-
+if($_SESSION['registrato'] == true){
+    
+    header("Location: ./home.php");
+}
 
 ?>
 
