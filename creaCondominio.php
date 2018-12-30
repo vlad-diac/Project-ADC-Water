@@ -18,16 +18,33 @@ if(isset($_POST['btn_next'])){ // pulsante avanti
         //AGGIUNGERE UN CONTROLLO CHE VERIFICHI CHE IL CONDOMINIO INSERITO NON ESISTA GIA' NEL SISTEMA
         //AGGIUNGERE UN CONTROLLO CHE VERIFICHI CHE IL CONDOMINIO INSERITO NON ESISTA GIA' NEL SISTEMA
         //AGGIUNGERE UN CONTROLLO CHE VERIFICHI CHE IL CONDOMINIO INSERITO NON ESISTA GIA' NEL SISTEMA
-        $statment_partizioni = connect("test")->prepare("INSERT INTO condomini (nome,citta,id_assoc) VALUES (?,?,?)");
+        $statment_condominio = connect("test")->prepare("INSERT INTO condomini (nome,citta,id_assoc) VALUES (?,?,?)");
 
-        $statment_partizioni->execute([
+        $statment_condominio->execute([
            
             $nome_cond,
             $citta_cond ,
             $id_utente
         ]);
         
-        header("Location: ./4.html");  
+        // ottengo l'id del condominio
+        $statment = connect("test")->prepare("SELECT * FROM condomini WHERE nome = :nome AND id_assoc = :id_utente AND citta = :citta LIMIT 1");
+        $statment->bindValue(':nome',$nome_cond, PDO::PARAM_STR);
+        $statment->bindValue(':id_utente',$id_utente, PDO::PARAM_STR);
+        $statment->bindValue(':citta',$citta_cond, PDO::PARAM_STR);
+        $statment->execute();
+        if ($statment->rowCount() != 0){
+
+            $data = $statment->fetch(PDO::FETCH_ASSOC);
+            
+            //CRIPTARE L'ID  AES 256 O ALTRO
+            //CRIPTARE L'ID  AES 256 O ALTRO
+            //CRIPTARE L'ID  AES 256 O ALTRO
+            //CRIPTARE L'ID  AES 256 O ALTRO
+            $id_condominio = $data['id'];
+
+        }
+        header("Location: ./datiUtentiCondominio.php?id=".$id_condominio);  
     }else{
         
         $error = 1;

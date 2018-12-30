@@ -1,20 +1,3 @@
-<?php 
-require("./connection_database.php");
-session_start();
-
-$_SESSION['condominio_in_uso'] = null; // prenderà il valore (nome) del condomio usato
-if($_SESSION['accreditato'] == false){ // controllo se sia loggato
-
-    header("Location: ./index.php");
-}
-
-if(isset($_GET['id'])){ // almeno so che condominio ho preso in considerazione 
-    
-    $_SESSION['condominio_in_uso'] = $_GET['id'];
-    
-}
-
-?>
 <!DOCTYPE html>
 <html>
 
@@ -31,40 +14,13 @@ if(isset($_GET['id'])){ // almeno so che condominio ho preso in considerazione
     <link rel="stylesheet" href="assets/css/Pretty-Footer.css">
     <link rel="stylesheet" href="assets/css/Rounded-Button.css">
     <link rel="stylesheet" href="assets/css/styles.css">
+    
+    
   
-    <script>
-        function showDettagli(str) {
-            if (str=="") {
+  
+    <link rel="stylesheet" href="assets/css/MUSA_panel-table.css">
+    
 
-                document.getElementById("txtHint").innerHTML="";
-
-                return;
-            } 
-
-            if (window.XMLHttpRequest) {
-                // code for IE7+, Firefox, Chrome, Opera, Safari
-                xmlhttp=new XMLHttpRequest();
-            } else { // code for IE6, IE5
-
-                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-
-            }
-
-            xmlhttp.onreadystatechange=function() {
-
-                if (this.readyState==4 && this.status==200) {
-
-                    document.getElementById("txtHint").innerHTML=this.responseText;
-
-                }
-            }
-            xmlhttp.open("GET","ajax_utenti.php?q="+str,true);
-            xmlhttp.send();
-        }
-
-
-
-    </script>
 </head>
 
 <body>
@@ -84,7 +40,7 @@ if(isset($_GET['id'])){ // almeno so che condominio ho preso in considerazione
                         </ul>
                         <form class="form-inline mr-auto" target="_self">
                             
-                        </form><span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" href="index.php?exit=ex" style="font-family: Bitter, serif;background-color: rgb(255,0,0); ">ESCI</a></div>
+                        </form><span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" href="inizio.html" style="font-family: Bitter, serif;background-color: rgb(255,0,0);">ESCI</a></div>
         </div>
         </nav>
         <div class="container hero" style="margin-top: 5px;">
@@ -94,91 +50,91 @@ if(isset($_GET['id'])){ // almeno so che condominio ho preso in considerazione
                 </div>
             </div>
         </div>
-        <div style="width: 100%;">
-        <div style="text-align: center; margin: 0 auto; width: 900px"> <div style="text-align:center;">
-            <h2 class="divider-style" style="color: rgb(255,255,255);margin-top: 20px;margin-bottom: 10px;"><span style="color: rgb(255,255,255);font-family: Bitter, serif;background-color: #292c2f;padding-left: 5px;padding-right: 5px;">Inserisci i Sottoutenti della Fattura</span></h2>
-            </div>
-       </div>
-       </div>
-        <div class="row" style="width: 100%;">
+        <div class="row">
             <div class="col">
-            <div>
-                <form method="post" action='<?php echo $_SERVER['PHP_SELF']; ?>'>
-                    <input type="text" onchange="showDettagli(this.value)" style="width: 80%" placeholder="Inserisci i valori in ordine separati dal ' ; ' es: nome;10;...." name="input_value">
-                <button type="button" class="btn btn-sm btn-primary btn-create">Aggiungi</button>
-               
-          
-               
-               
-                <div class="col-md-10 col-md-offset-1">
-
-                    <div class="panel panel-default panel-table">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col col-xs-6">
-                                    <h3 class="panel-title">Panel Heading</h3>
-                                </div>
-                                <div class="col col-xs-6 text-right">
-                                   
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel-body">
-                            <table class="table table-striped table-bordered table-list">
-                                <thead>
-                                    <tr>
-                                        <th><em class="fa fa-cog"></em></th>
-                                        <th>Nome</th>
-                                        <th>Numero persone</th>
-                                        <th>Lettura precedenta (mc)</th>
-                                        <th>Lettura attuale (mc)</th>
-                                        <th>Consumo periodico</th>
-                                        <th>Importi versati</th>
-                                    </tr> 
-                                </thead>
-                                <tbody id="txtHint"></tbody>
-                                
-                                
-                            </table>
-
-                        </div>
-                       
-                    </div>
-
-                </div>
-                
-               
-
-
-            </div>
-            <br/>
-                </form>
-    <div>
-       <div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4"></div>
-                <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" style="background:green;">AVANTI</button></div>
-                <div class="col-md-4"></div>
+                <div style="text-align:center;"></div>
             </div>
         </div>
-        </div>
-        <div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4"></div>
-                <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" style="background:red;">INDIETRO</button></div>
-                <div class="col-md-4"></div>
-            </div>
-        </div>
-        </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-           </div>
-            </div>
-        </div>
-        
+        <div class="row" style="margin: 30px;">
+            <div class="col"></div>
+            
+            <div class="container">
+    <div class="row">
+
     
+        <div class="col-md-10 col-md-offset-1">
+
+            <div class="panel panel-default panel-table">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col col-xs-6">
+                    <h3 class="panel-title">Panel Heading</h3>
+                  </div>
+                  <div class="col col-xs-6 text-right">
+                    <button type="button" class="btn btn-sm btn-primary btn-create">Create New</button>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-body">
+                <table class="table table-striped table-bordered table-list">
+                  <thead>
+                    <tr>
+                        <th><em class="fa fa-cog"></em></th>
+                        <th class="hidden-xs">ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Email</th>
+                    </tr> 
+                  </thead>
+                  <tbody>
+                          <tr>
+                            <td align="center">
+                              <a class="btn btn-default"><em class="fa fa-pencil"></em></a>
+                              <a class="btn btn-danger"><em class="fa fa-trash"></em></a>
+                            </td>
+                            <td class="hidden-xs">1</td>
+                            <td>John Doe</td>
+                            <td>johndoe@example.com</td>
+                              <td class="hidden-xs">1</td>
+                            <td>John Doe</td>
+                            <td>johndoe@example.com</td>
+                          </tr>
+                        </tbody>
+                </table>
+            
+              </div>
+              <div class="panel-footer">
+                <div class="row">
+                  <div class="col col-xs-4">Page 1 of 5
+                  </div>
+                  <div class="col col-xs-8">
+                    <ul class="pagination hidden-xs pull-right">
+                      <li><a href="#">1</a></li>
+                      <li><a href="#">2</a></li>
+                      <li><a href="#">3</a></li>
+                      <li><a href="#">4</a></li>
+                      <li><a href="#">5</a></li>
+                    </ul>
+                    <ul class="pagination visible-xs pull-right">
+                        <li><a href="#">«</a></li>
+                        <li><a href="#">»</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+</div></div></div>
+            <div class="col"></div>
+        </div>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col"></div>
+    </div>
     </div>
     </div>
     <div></div>
@@ -211,6 +167,7 @@ if(isset($_GET['id'])){ // almeno so che condominio ho preso in considerazione
     </footer>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    
 </body>
 
 </html>
