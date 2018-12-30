@@ -1,42 +1,60 @@
-<?php 
+<?php
 require("./connection_database.php");
 session_start();
 $error = 0;
-if($_SESSION['accreditato'] == false){ // controllo se sia loggato
+    if($_SESSION['accreditato'] == false){ // controllo se sia loggato
 
-    header("Location: ./index.php");
-}
-
-if(isset($_POST['btn_next'])){ // pulsante avanti
-    
-    $id_utente = $_SESSION['ID'];
-    $nome_cond = $_POST['input_nome_condominio']; 
-    $citta_cond = $_POST['input_citta'];
-    
-    if($nome_cond != null and $citta_cond != null){
-        //AGGIUNGERE UN CONTROLLO CHE VERIFICHI CHE IL CONDOMINIO INSERITO NON ESISTA GIA' NEL SISTEMA
-        //AGGIUNGERE UN CONTROLLO CHE VERIFICHI CHE IL CONDOMINIO INSERITO NON ESISTA GIA' NEL SISTEMA
-        //AGGIUNGERE UN CONTROLLO CHE VERIFICHI CHE IL CONDOMINIO INSERITO NON ESISTA GIA' NEL SISTEMA
-        //AGGIUNGERE UN CONTROLLO CHE VERIFICHI CHE IL CONDOMINIO INSERITO NON ESISTA GIA' NEL SISTEMA
-        $statment_partizioni = connect("test")->prepare("INSERT INTO condomini (nome,citta,id_assoc) VALUES (?,?,?)");
-
-        $statment_partizioni->execute([
-           
-            $nome_cond,
-            $citta_cond ,
-            $id_utente
-        ]);
-        
-        header("Location: ./4.html");  
-    }else{
-        
-        $error = 1;
+        header("Location: ./index.php");
+    }
+    //variabili
+    if(!isset($_SESSION['condominio_id']))
+    {
+        $_SESSION['condominio_id'] = null;
     }
 
-}
-?>
+    $cond = false;
 
-<!DOCTYPE html>
+    if(isset($_GET['id'])){ // se l'id non è settato lo riporto alla home
+
+        $_SESSION['condominio_id'] = $_GET['id'];
+        $cond = true;
+
+    }else{
+
+        if($cond != true and $error != 1){  // SISTEMARE BUG id settato o meno dove deve andare
+            header("Location: ./home.php");
+        }
+    }
+
+    if(isset($_POST['btn_next'])){
+
+        $fattura = $_POST['input_fattura'];
+
+        if($fattura != null){
+
+            $statment_fattura = connect("test")->prepare("INSERT INTO fatture (numeroFattura,id_condominio) VALUES (?,?)");
+
+            $statment_fattura->execute([
+
+             $fattura,
+             $_SESSION['condominio_id']
+
+            ]);
+
+            unset($_SESSION['condominio_id']);
+            header("Location: ./5.html");
+
+
+        }else{
+
+            $error = 1;
+        }
+
+
+    }
+
+
+?>
 
 
 <!DOCTYPE html>
@@ -58,7 +76,7 @@ if(isset($_POST['btn_next'])){ // pulsante avanti
 </head>
 
 <body>
-  <form method="post" action='<?php echo $_SERVER['PHP_SELF']; ?>'>
+    <form method="post" action='<?php echo $_SERVER['PHP_SELF']; ?>'>
     <div>
         <div class="header-dark" style="padding: 0PX 0PX 10PX;">
             <nav class="navbar navbar-dark navbar-expand-md navigation-clean-search">
@@ -75,7 +93,7 @@ if(isset($_POST['btn_next'])){ // pulsante avanti
                         </ul>
                         <form class="form-inline mr-auto" target="_self">
                             
-                        </form><span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" href="index.php?exit=ex" style="font-family: Bitter, serif;background-color: rgb(255,0,0);">ESCI</a></div>
+                        </form><span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" name="btn_exit" href="index.php?exit=ex"style="font-family: Bitter, serif;background-color: rgb(255,0,0);">ESCI</a></div>
         </div>
         </nav>
         <div class="container hero" style="margin-top: 5px;">
@@ -87,45 +105,47 @@ if(isset($_POST['btn_next'])){ // pulsante avanti
         </div>
         <div style="text-align: center; margin: 0 auto; width: 900px"> <div style="text-align:center;">
             <h2 class="divider-style" style="color: rgb(255,255,255);margin-top: 20px;margin-bottom: 10px;"><span style="color: rgb(255,255,255);font-family: Bitter, serif;background-color: #292c2f;padding-left: 5px;padding-right: 5px;">Inserisci i Dati del Nuovo Condominio</span></h2>
-            </div> 
-            <?php 
-            
-            if($error == 1){echo "<p style='color:red;'>Inserisci tutti i dati prima di continuare</p>"; $error=0;} // msg di errore
-                    
-                            
-             ?>
+            </div>
        </div>
+            <?php 
+
+            if($error == 1){echo "<p style='color:red;text-align: center;'>Inserisci tutti i dati prima di continuare</p>"; $error=0;} // msg di errore
+
+
+            ?>
         <div class="row">
             <div class="col">
                 <div><div style="margin-top: 10px;margin-bottom: 10px;">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="text-center" style="margin-top: 10px;margin-bottom: 10px;"><a class="btn btn-primary btn-lg" role="button" href="#myModal" data-toggle="modal" style="font-size: 25px;background-color: rgb(255,255,255);color: rgb(0,0,0);">NOME CONDOMINIO</a>
+                    <div class="text-center" style="margin-top: 10px;margin-bottom: 10px;"><a class="btn btn-primary btn-lg" role="button" href="#myModal" data-toggle="modal" style="font-size: 25px;background-color: rgb(255,255,255);color: rgb(0,0,0);">NUMERO FATTURA</a>
                        
+                        <div class="modal fade" role="dialog" tabindex="-1"
+                            id="myModal">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4>Modal Title</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+                                    <div class="modal-body">
+                                        <p class="text-center text-muted">Description </p>
+                                    </div>
+                                    <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6 text-center" style="margin-top: 10px;margin-bottom: 10px;"><input class="form-control-lg" type="text" placeholder="ES: Montevideo 22" name="input_nome_condominio" style="height: 54.8px;"></div>
+                <div class="col-md-6 text-center" style="margin-top: 10px;margin-bottom: 10px;"><input name="input_fattura" class="form-control-lg" type="text" placeholder="ES: Montevideo 22" style="height: 54.8px;"></div>
             </div>
         </div>
     </div>
-    <div style="margin-top: 10px;margin-bottom: 10px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="text-center" style="margin-top: 10px;"><a class="btn btn-primary btn-lg" role="button" href="#myModal" data-toggle="modal" style="font-size: 25px;color: rgb(0,0,0);background-color: rgb(255,255,255);">CITTÀ&nbsp;DI UBICAZIONE</a>
-                       
-                    </div>
-                </div>
-                <div class="col-md-6 text-center" style="margin-top: 10px;margin-bottom: 10px;"><input name="input_citta" class="form-control-lg" type="text" placeholder="ES: Torino" style="height: 54.8px;"></div>
-            </div>
-        </div>
-    </div>
+   
     <div>
         <div class="container">
             <div class="row">
                 <div class="col-md-4"></div>
-                <div class="col-md-4 d-xl-flex align-items-xl-center"> <input class="add" name="btn_next" type="submit" value="AVANTI" style="background:green;"></div>
+                <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" type="submit" name="btn_next" style="background:green;">AVANTI</button></div>
                 <div class="col-md-4"></div>
             </div>
         </div>
@@ -147,8 +167,7 @@ if(isset($_POST['btn_next'])){ // pulsante avanti
     
     </div>
     </div>
-    <div></div>
-    </form>
+        <div></div> </form>
     <footer style="margin: 0;">
         <div class="row">
             <div class="col-sm-6 col-md-4 footer-navigation">
