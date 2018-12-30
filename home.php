@@ -10,6 +10,8 @@ if($_SESSION['accreditato'] == false){ // controllo se sia loggato
 
 $contenuto = '';
 $partizioni_create = 0;
+
+
 ?>
 
 <!DOCTYPE html>
