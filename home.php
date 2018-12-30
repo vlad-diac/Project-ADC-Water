@@ -42,10 +42,20 @@ $partizioni_create = 0;
                             <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;">Manuale</a></li>
                             <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;">Video-Corso</a></li>
                             <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;">Condomini</a></li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;color: rgb(255,0,0);">Abbonamenti</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;color: rgb(255,0,0);">Contattaci</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;color: yellow;">Abbonamenti</a></li>
+                     
                         </ul>
-                      <span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" style="font-family: Bitter, serif;background-color: rgb(255,0,0);" name="btn_exit" href="index.php?exit=ex">ESCI</a></div></form>
+                        <ul class="nav navbar-nav ml-auto">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle nav-link dropdown-toggle" data-toggle="dropdown"   style="color: red;"  aria-expanded="false" href="#"><b>Gestisci account</b></a>
+                            <div class="dropdown-menu" role="menu"><p align="center"><b><?php echo $_SESSION['username']; ?></b></p><hr>
+                                <a class="dropdown-item" role="presentation" href="./account_utente.php">Modifica account</a>
+                                <a class="dropdown-item" role="presentation" href="./contattaci.php">Assistenza</a><hr>
+                                <a style="color: red;" class="dropdown-item" role="presentation"href="index.php?exit=ex"><b>Disconetti</b></a>
+                            </div>
+                        </li>   
+                        </ul>
+                    </div></form>
         </div>
         </nav>
         <div class="container hero" style="margin-top: 5px;">
@@ -97,13 +107,14 @@ $partizioni_create = 0;
                         $statment_condomio = connect("test")->query("SELECT * FROM condomini WHERE id_assoc = '".$id."'");
                       
                         while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
-                            $contenuto .= '<input type="submit" class="btn btn-success" style="width: 100%;" value='.$rows[1].' ><br> 
+                            $contenuto .= '<a href="inserisciFattura.php?id='.$rows[0].'"><input type="submit" class="btn btn-success" style="width: 100%;" value="'.$rows[1].' - '.$rows[2].'" ></a><br> 
                             <br>
                             ';
                         }
                         $contenuto .= '
-                                </div>
-                                <div class="modal-footer"><button class="btn btn-light" type="button" data-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
+                                     <p style="text-align: center;"> o </p>
+                        <a href="creaCondominio.php"><input type="submit" class="btn btn-info"   style="width: 100%;" value="Aggiungi un nuovo condominio"> </a>
+                                </div>                               
                             </div>
                         </div>
                 </div>

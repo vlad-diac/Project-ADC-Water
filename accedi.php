@@ -32,7 +32,7 @@ if($_POST['username'] and $_POST['password']){
         //            $sql_update_last_access = "UPDATE users SET last_access = current_timestamp WHERE username=:user";
         //            $statment= $connessione->prepare($sql_update_last_access);
         //            $statment->execute($data);
-
+                    $_SESSION['username'] = $username;
                     echo "200";exit();  // ok
 
                 }else{
