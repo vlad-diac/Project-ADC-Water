@@ -14,6 +14,10 @@ if(isset($_GET['id'])){ // almeno so che condominio ho preso in considerazione
     
 }
 
+if(!isset($_SESSION['condominio_in_uso'])){
+    
+    
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -71,22 +75,30 @@ if(isset($_GET['id'])){ // almeno so che condominio ho preso in considerazione
     <div>
         <div class="header-dark" style="padding: 0PX 0PX 10PX;">
             <nav class="navbar navbar-dark navbar-expand-md navigation-clean-search">
-                <div class="container"><a class="navbar-brand" href="#" style="font-family: Bitter, serif;">AccadueCo</a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-                    <div
-                        class="collapse navbar-collapse" id="navcol-1">
-                        <ul class="nav navbar-nav">
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;">Home</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;">Manuale</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;">Video-Corso</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;">Condomini</a></li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;color: rgb(255,0,0);">Abbonamenti</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;color: rgb(255,0,0);">Contattaci</a></li>
-                        </ul>
-                        <form class="form-inline mr-auto" target="_self">
-                            
-                        </form><span class="navbar-text"><a href="#" class="login" style="font-family: Bitter, serif;">Profilo</a></span><a class="btn btn-light action-button" role="button" href="index.php?exit=ex" style="font-family: Bitter, serif;background-color: rgb(255,0,0); ">ESCI</a></div>
-        </div>
-        </nav>
+                <div class="container"><a class="navbar-brand" href="./index.php" style="font-family: Bitter, serif;">AccadueCo</a><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                    <form method="post" action='<?php echo $_SERVER['PHP_SELF']; ?>'>
+                        <div class="collapse navbar-collapse" id="navcol-1">
+                            <ul class="nav navbar-nav">
+                                <li class="nav-item" role="presentation"><a class="nav-link" href="./home.php" style="font-family: Bitter, serif;">Home</a></li>
+                                <li class="nav-item" role="presentation"><a class="nav-link" href="" style="font-family: Bitter, serif;">Manuale</a></li>
+                                <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;">Video-Corso</a></li>
+                                <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;">Condomini</a></li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                                <li class="nav-item" role="presentation"><a class="nav-link" href="#" style="font-family: Bitter, serif;color: yellow;">Abbonamenti</a></li>
+
+                            </ul>
+                            <ul class="nav navbar-nav ml-auto">
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle nav-link dropdown-toggle" data-toggle="dropdown"   style="color: red;"  aria-expanded="false" href="#"><b>Gestisci account</b></a>
+                                    <div class="dropdown-menu" role="menu"><p align="center"><b><?php echo $_SESSION['username']; ?></b></p><hr>
+                                        <a class="dropdown-item" role="presentation" href="./account_utente.php">Modifica account</a>
+                                        <a class="dropdown-item" role="presentation" href="./contattaci.php">Assistenza</a><hr>
+                                        <a style="color: red;" class="dropdown-item" role="presentation"href="index.php?exit=ex"><b>Disconetti</b></a>
+                                    </div>
+                                </li>   
+                            </ul>
+                        </div></form>
+                </div>
+            </nav>
         <div class="container hero" style="margin-top: 5px;">
             <div class="row" style="margin: 20px;margin-right: 0;margin-left: 0;">
                 <div class="col-md-8 offset-md-2">
@@ -104,7 +116,7 @@ if(isset($_GET['id'])){ // almeno so che condominio ho preso in considerazione
             <div class="col">
             <div>
                 <form method="post" action='<?php echo $_SERVER['PHP_SELF']; ?>'>
-                    <input type="text" onchange="showDettagli(this.value)" style="width: 80%" placeholder="Inserisci i valori in ordine separati dal ' ; ' es: nome;10;...." name="input_value">
+                    <input type="text" onchange="showDettagli(this.value)" style="width: 80%" placeholder="Inserisci i valori in ordine separati dal ' ; ' es: nome;10;....  i numeri con la virgola usare ' .  es: 12.11 '" name="input_value">
                 <button type="button" class="btn btn-sm btn-primary btn-create">Aggiungi</button>
                
           
@@ -136,7 +148,42 @@ if(isset($_GET['id'])){ // almeno so che condominio ho preso in considerazione
                                         <th>Importi versati</th>
                                     </tr> 
                                 </thead>
-                                <tbody id="txtHint"></tbody>
+                                <tbody id="txtHint">
+                                    
+                                    <?php
+                                    $contenuto = '';
+                                    $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio ORDER BY id DESC");
+                                    
+                                    if(!isset($_GET['id'])){
+                                        
+                                    while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
+                                        $contenuto .= ' <tbody>
+                                    <tr>
+                                        <td align="center">
+                                            <a class="btn btn-danger" href="./datiUtentiCondominio.php?cls='.$rows[0].'"><em class="fa fa-trash"></em></a>
+                                        </td>
+                                        <td class="hidden-xs">'.$rows[1].'</td>
+                                        <td>'.$rows[2].'</td>
+                                        <td>'.$rows[3].'</td>
+                                        <td class="hidden-xs">'.$rows[4].'</td>
+                                        <td>'.$rows[5].'</td>
+                                        <td>'.$rows[6].'</td>
+                                    </tr>
+                                </tbody>
+                ';
+
+
+                                    }
+                                    echo $contenuto;
+                                    }
+                                    
+                                    
+                                    ?>
+                
+                                    
+                                    <!-- JS OUTPUT -->
+                                    
+                                </tbody>
                                 
                                 
                             </table>
@@ -158,7 +205,7 @@ if(isset($_GET['id'])){ // almeno so che condominio ho preso in considerazione
         <div class="container">
             <div class="row">
                 <div class="col-md-4"></div>
-                <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" style="background:green;">AVANTI</button></div>
+                <a href="./5.html">  <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" style="background:green;">AVANTI</button></div></a>
                 <div class="col-md-4"></div>
             </div>
         </div>
