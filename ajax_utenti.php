@@ -57,7 +57,7 @@ if(isset($_GET['q'])){
     ]);
 
     
-    
+    $_SESSION['condominio']=$id_cond;
     //CRIPTARE COMUNICAZIONE ------
     $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio ORDER BY id DESC");
 

@@ -205,7 +205,7 @@ if(!isset($_SESSION['condominio_in_uso'])){
         <div class="container">
             <div class="row">
                 <div class="col-md-4"></div>
-                <a href="./5.html">  <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" style="background:green;">AVANTI</button></div></a>
+                <a href="./canoniFissi.php">  <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" style="background:green;">AVANTI</button></div></a>
                 <div class="col-md-4"></div>
             </div>
         </div>

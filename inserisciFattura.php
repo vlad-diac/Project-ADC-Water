@@ -42,7 +42,7 @@ $error = 0;
             ]);
 
             unset($_SESSION['condominio_id']);
-            header("Location: ./5.html");
+            header("Location: ./canoniFissi.php");
 
 
         }else{
