@@ -7,7 +7,21 @@ if($_SESSION['accreditato'] == false){ // controllo se sia loggato
     header("Location: ./index.php");
 }
 
+$contatore = 0;
+$somma_mc_consumo_periodico = 0;
 
+$statment_condomio = connect("test")->query("SELECT id_condominio FROM utenti_condominio WHERE id_condominio = '".$_SESSION['condominio_in_uso']."' ");
+                      
+                        while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
+                            
+                            $contatore++;
+                        }
+$statment_consumo = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$_SESSION['condominio_in_uso']."' ");
+                      
+                        while($rows = $statment_consumo->fetch(PDO::FETCH_NUM)){
+                            
+                            $somma_mc_consumo_periodico = $somma_mc_consumo_periodico + $rows[5];  // il campo consumo periodico -- iniziare da 0 a contare nel database   .... in poi ....
+                        }
 
 
 ?>
@@ -91,10 +105,10 @@ if($_SESSION['accreditato'] == false){ // controllo se sia loggato
       <tbody>
         <tr>
           
-          <td><input type='text' name='acqua_gg' placeholder='ES-150' readonly/></td>
-          <td><input type='text' name='acqua_netto' value="" readonly/></td>
+          <td><input type='text' name='acqua_gg' value='<?php echo $contatore; ?>' readonly/></td>
+          <td><input type='text' name='acqua_netto' value='<?php echo $somma_mc_consumo_periodico; ?>' readonly/></td>
           <td><input type='text' name='acqua_iva' placeholder='ES-10%' readonly/></td>
-          <td><input type='text' name='acqua_lordo' value="" placeholder='ES-176,00' readonly/></td>
+          <td><input type='text' name='acqua_lordo'  readonly/></td>
         </tr>
        
       </tbody>

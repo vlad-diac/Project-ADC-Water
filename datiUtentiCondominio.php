@@ -10,7 +10,7 @@ if($_SESSION['accreditato'] == false){ // controllo se sia loggato
 
 if(isset($_GET['id'])){ // almeno so che condominio ho preso in considerazione 
     
-    $_SESSION['condominio_in_uso'] = $_GET['id'];
+    $_SESSION['condominio_in_uso'] = $_GET['id'];  // ID CONDOMINIO PRESO IN CONSIDERAZIONE
     
 }
 
@@ -152,7 +152,7 @@ if(!isset($_SESSION['condominio_in_uso'])){
                                     
                                     <?php
                                     $contenuto = '';
-                                    $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio ORDER BY id DESC");
+                                    $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$_SESSION['condominio_in_uso']."' ORDER BY id DESC");
                                     
                                     if(!isset($_GET['id'])){
                                         

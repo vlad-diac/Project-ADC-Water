@@ -9,7 +9,7 @@ if($_SESSION['accreditato'] == false){ // controllo se sia loggato
 
 if(isset($_POST['avanti']))			//se premo bottone registra
 {				
-	if($_POST['bolli'] <> "" and $_POST['depositi_cauzionali'] <> "" and $_POST['lettura_contatori'] <> "" and $_POST['altri_oneri'] <> "")								//controllo che i campi non siano vuoti
+	if($_POST['bolli'] != "" and $_POST['depositi_cauzionali'] <> "" and $_POST['lettura_contatori'] <> "" and $_POST['altri_oneri'] <> "")								//controllo che i campi non siano vuoti
     {		
         
         $_SESSION['bolli'] = $_POST['bolli'];
@@ -17,13 +17,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
         $_SESSION['lettura_contatori'] = $_POST['lettura_contatori'];
         $_SESSION['altri_oneri'] = $_POST['altri_oneri'];
         
-        $query = "SELECT SUM(consumo_periodico) FROM `utenti_condominio` as totale_numero WHERE id_condominio = '.$_SESSION['condominio_in_uso']'";
-
-
-
-
-        $result = mysql_query($query);
-
+        
 
         
         

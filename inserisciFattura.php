@@ -7,16 +7,16 @@ $error = 0;
         header("Location: ./index.php");
     }
     //variabili
-    if(!isset($_SESSION['condominio_id']))
+    if(!isset($_SESSION['condominio_in_uso']))
     {
-        $_SESSION['condominio_id'] = null;
+        $_SESSION['condominio_in_uso'] = null;
     }
 
     $cond = false;
 
     if(isset($_GET['id'])){ // se l'id non è settato lo riporto alla home
 
-        $_SESSION['condominio_id'] = $_GET['id'];
+        $_SESSION['condominio_in_uso'] = $_GET['id'];
         $cond = true;
 
     }else{
@@ -37,11 +37,10 @@ $error = 0;
             $statment_fattura->execute([
 
              $fattura,
-             $_SESSION['condominio_id']
+             $_SESSION['condominio_in_uso']
 
             ]);
 
-            unset($_SESSION['condominio_id']);
             header("Location: ./canoniFissi.php");
 
 

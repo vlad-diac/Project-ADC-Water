@@ -59,7 +59,7 @@ if(isset($_GET['q'])){
     
     $_SESSION['condominio']=$id_cond;
     //CRIPTARE COMUNICAZIONE ------
-    $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio ORDER BY id DESC");
+    $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$_SESSION['condominio_in_uso']."'ORDER BY id DESC");
 
     while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
         $contenuto .= ' <tbody>

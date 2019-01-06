@@ -1,4 +1,54 @@
 <?php 
+//require("./connection_database.php");
+//session_start();
+//
+//if($_SESSION['accreditato'] == false){ // controllo se sia loggato
+//    
+//    header("Location: ./index.php");
+//}
+//
+//if(isset($_POST['avanti']))			//se premo bottone registra
+//{				
+//    $campo_vuoto = true;
+//    $array_campi = array($_POST['acqua_gg'] ,$_POST['acqua_netto'], $_POST['acqua_iva'], $_POST['acqua_lordo'], $_POST['fognatura_gg'], $_POST['fognatura_netto'], $_POST['fognatura_iva'], $_POST['fognatura_lordo'], $_POST['depurazioni_gg'], $_POST['depurazioni_netto'], $_POST['depurazioni_iva'], $_POST['depurazioni_lordo']);
+//    
+//    for($i = 0; $i < strlen($array_campi); $i++){
+//        
+//   (($array_campi{$i} != "") ? $campo_vuoto = false : $campo_vuoto = true);
+//       
+//       
+//   }
+//        
+//    }
+//    
+////	if($_POST['acqua_gg'] <> "" and $_POST['acqua_netto'] <> "" and $_POST['acqua_iva'] <> "" and $_POST['acqua_lordo'] <> "" and $_POST['fognatura_gg'] <> "" and $_POST['fognatura_netto'] <> "" and $_POST['fognatura_iva'] <> "" and $_POST['fognatura_lordo'] <> "" and $_POST['depurazioni_gg'] <> "" and $_POST['depurazioni_netto'] <> "" and $_POST['depurazioni_iva'] <> "" and $_POST['depurazioni_lordo'] <> "")								//controllo che i campi non siano vuoti
+//    if($campo_vuoto != true)
+//    {		
+//        
+//        // METTERE IN ARRAY E RITORNARE A NULL ALLA FINE 
+//		$_SESSION['acqua_gg'] = $_POST['acqua_gg'];               // ottengo il valore scritto nel campo di competenza e lo inserisco in variabili locali 
+//        $_SESSION['acqua_netto'] = $_POST['acqua_netto'];
+//        $_SESSION['acqua_iva'] = $_POST['acqua_iva'];
+//        $_SESSION['acqua_lordo'] = $_POST['acqua_lordo]'];
+//        
+//        $_SESSION['fognatura_gg'] = $_POST['fognatura_gg'];
+//        $_SESSION['fognatura_netto'] = $_POST['fognatura_netto'];   
+//        $_SESSION['fognatura_iva'] = $_POST['fognatura_iva'];
+//        $_SESSION['fognatura_lordo'] = $_POST['fognatura_lordo'];
+//        
+//        $_SESSION['depurazione_gg'] = $_POST['depurazioni_gg'];
+//        $_SESSION['depurazione_netto'] = $_POST['depurazioni_netto'];
+//        $_SESSION['depurazione_iva'] = $_POST['depurazioni_iva'];
+//        $_SESSION['depurazione_lordo'] = $_POST['depurazioni_lordo'];   
+//	$campo_vuoto = false;
+//    header("Location: ./consumi.php");
+//        
+//    }
+//    else
+//    {
+//    	$_SESSION['debug'] = "Compila tutti i campi, impossibile creare account :("; //altrimenti, non avendo inserito tutti i campi visualizza errore
+//        
+//	}
 require("./connection_database.php");
 session_start();
 
@@ -35,6 +85,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
         
 	}
 }
+
 
 ?>
 
@@ -160,8 +211,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
             </div>
         </div>
         </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+
            </div>
             </div>
         </div>
