@@ -15,6 +15,8 @@ if(isset($_POST['avanti']))			//se premo bottone registra
         $_SESSION['mora'] = $_POST['mora'];
         $_SESSION['recupero_crediti'] = $_POST['recupero_crediti'];
         
+        $_SESSION['totale_costi_proporzioni'] = $_SESSION['mora'] + $_SESSION['recupero_crediti'];
+        
         
     header("Location: ./costiaQuoteUguali.php");
         

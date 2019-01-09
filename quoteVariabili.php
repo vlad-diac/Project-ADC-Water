@@ -7,6 +7,9 @@ if($_SESSION['accreditato'] == false){ // controllo se sia loggato
     header("Location: ./index.php");
 }
 
+
+
+
 if(isset($_POST['avanti']))			//se premo bottone registra
 {				
 	if($_POST['depurazione_variabili_gg'] <> "" and $_POST['depurazione_variabili_netto'] <> "" and $_POST['depurazione_variabili_iva'] <> "" and $_POST['depurazione_variabili_lordo'] <> "" and $_POST['fognatura_variabili_gg'] <> "" and $_POST['fognatura_variabili_netto'] <> "" and $_POST['fognatura_variabili_iva'] <> "" and $_POST['fognatura_variabili_lordo'] <> "" and $_POST['ui1_gg'] <> "" and $_POST['ui1_netto'] <> "" and $_POST['ui1_iva'] <> "" and $_POST['ui1_lordo'] <> "" and $_POST['ui2_gg'] <> "" and $_POST['ui2_netto'] <> "" and $_POST['ui2_iva'] <> "" and $_POST['ui2_lordo'] <> "" and $_POST['ui3_gg'] <> "" and $_POST['ui3_netto'] <> "" and $_POST['ui3_iva'] <> "" and $_POST['ui3_lordo'] <> "")								//controllo che i campi non siano vuoti
@@ -37,6 +40,8 @@ if(isset($_POST['avanti']))			//se premo bottone registra
         $_SESSION['ui3_iva'] = $_POST['ui3_iva'];
         $_SESSION['ui3_lordo'] = $_POST['ui3_lordo'];
         
+        $_SESSION['totale_lordo_variabili'] = $_SESSION['depurazione_variabili_lordo'] + $_SESSION['fognatura_variabili_lordo'] + $_SESSION['ui1_lordo'] + $_SESSION['ui2_lordo'] + $_SESSION['ui3_lordo'];
+        
     header("Location: ./costiaProporzione.php");
         
     }
@@ -46,7 +51,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
         
 	}
 }
-
+echo $_SESSION['tot_mc_consumi'];
 ?>
 
 <!DOCTYPE html>

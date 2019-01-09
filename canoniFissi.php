@@ -1,54 +1,5 @@
 <?php 
-//require("./connection_database.php");
-//session_start();
-//
-//if($_SESSION['accreditato'] == false){ // controllo se sia loggato
-//    
-//    header("Location: ./index.php");
-//}
-//
-//if(isset($_POST['avanti']))			//se premo bottone registra
-//{				
-//    $campo_vuoto = true;
-//    $array_campi = array($_POST['acqua_gg'] ,$_POST['acqua_netto'], $_POST['acqua_iva'], $_POST['acqua_lordo'], $_POST['fognatura_gg'], $_POST['fognatura_netto'], $_POST['fognatura_iva'], $_POST['fognatura_lordo'], $_POST['depurazioni_gg'], $_POST['depurazioni_netto'], $_POST['depurazioni_iva'], $_POST['depurazioni_lordo']);
-//    
-//    for($i = 0; $i < strlen($array_campi); $i++){
-//        
-//   (($array_campi{$i} != "") ? $campo_vuoto = false : $campo_vuoto = true);
-//       
-//       
-//   }
-//        
-//    }
-//    
-////	if($_POST['acqua_gg'] <> "" and $_POST['acqua_netto'] <> "" and $_POST['acqua_iva'] <> "" and $_POST['acqua_lordo'] <> "" and $_POST['fognatura_gg'] <> "" and $_POST['fognatura_netto'] <> "" and $_POST['fognatura_iva'] <> "" and $_POST['fognatura_lordo'] <> "" and $_POST['depurazioni_gg'] <> "" and $_POST['depurazioni_netto'] <> "" and $_POST['depurazioni_iva'] <> "" and $_POST['depurazioni_lordo'] <> "")								//controllo che i campi non siano vuoti
-//    if($campo_vuoto != true)
-//    {		
-//        
-//        // METTERE IN ARRAY E RITORNARE A NULL ALLA FINE 
-//		$_SESSION['acqua_gg'] = $_POST['acqua_gg'];               // ottengo il valore scritto nel campo di competenza e lo inserisco in variabili locali 
-//        $_SESSION['acqua_netto'] = $_POST['acqua_netto'];
-//        $_SESSION['acqua_iva'] = $_POST['acqua_iva'];
-//        $_SESSION['acqua_lordo'] = $_POST['acqua_lordo]'];
-//        
-//        $_SESSION['fognatura_gg'] = $_POST['fognatura_gg'];
-//        $_SESSION['fognatura_netto'] = $_POST['fognatura_netto'];   
-//        $_SESSION['fognatura_iva'] = $_POST['fognatura_iva'];
-//        $_SESSION['fognatura_lordo'] = $_POST['fognatura_lordo'];
-//        
-//        $_SESSION['depurazione_gg'] = $_POST['depurazioni_gg'];
-//        $_SESSION['depurazione_netto'] = $_POST['depurazioni_netto'];
-//        $_SESSION['depurazione_iva'] = $_POST['depurazioni_iva'];
-//        $_SESSION['depurazione_lordo'] = $_POST['depurazioni_lordo'];   
-//	$campo_vuoto = false;
-//    header("Location: ./consumi.php");
-//        
-//    }
-//    else
-//    {
-//    	$_SESSION['debug'] = "Compila tutti i campi, impossibile creare account :("; //altrimenti, non avendo inserito tutti i campi visualizza errore
-//        
-//	}
+
 require("./connection_database.php");
 session_start();
 
@@ -57,26 +8,36 @@ if($_SESSION['accreditato'] == false){ // controllo se sia loggato
     header("Location: ./index.php");
 }
 
+$_SESSION['totale_lordo_fissi']=0;
+
 if(isset($_POST['avanti']))			//se premo bottone registra
 {				
-	if($_POST['acqua_gg'] <> "" and $_POST['acqua_netto'] <> "" and $_POST['acqua_iva'] <> "" and $_POST['acqua_lordo'] <> "" and $_POST['fognatura_gg'] <> "" and $_POST['fognatura_netto'] <> "" and $_POST['fognatura_iva'] <> "" and $_POST['fognatura_lordo'] <> "" and $_POST['depurazioni_gg'] <> "" and $_POST['depurazioni_netto'] <> "" and $_POST['depurazioni_iva'] <> "" and $_POST['depurazioni_lordo'] <> "")								//controllo che i campi non siano vuoti
+	if($_POST['acqua_gg'] <> "" and $_POST['acqua_netto'] <> "" and $_POST['acqua_iva'] <> "" and $_POST['a_lordo'] <> "" and $_POST['fognatura_gg'] <> "" and $_POST['fognatura_netto'] <> "" and $_POST['fognatura_iva'] <> "" and $_POST['fognatura_lordo'] <> "" and $_POST['depurazioni_gg'] <> "" and $_POST['depurazioni_netto'] <> "" and $_POST['depurazioni_iva'] <> "" and $_POST['depurazioni_lordo'] <> "")								//controllo che i campi non siano vuoti
     {		
-		$_SESSION['acqua_gg'] = $_POST['acqua_gg'];               // ottengo il valore scritto nel campo di competenza e lo inserisco in variabili locali 
-        $_SESSION['acqua_netto'] = $_POST['acqua_netto'];
-        $_SESSION['acqua_iva'] = $_POST['acqua_iva'];
-        $_SESSION['acqua_lordo'] = $_POST['acqua_lordo]'];
+		$_SESSION['acqua_s_gg'] = $_POST['acqua_gg'];               // ottengo il valore scritto nel campo di competenza e lo inserisco in variabili locali 
+        $_SESSION['acqua_s_netto'] = $_POST['acqua_netto'];
+        $_SESSION['acqua_s_iva'] = $_POST['acqua_iva'];
+        $_SESSION['acqua_s_lordo'] = $_POST['a_lordo]'];
         
-        $_SESSION['fognatura_gg'] = $_POST['fognatura_gg'];
-        $_SESSION['fognatura_netto'] = $_POST['fognatura_netto'];
-        $_SESSION['fognatura_iva'] = $_POST['fognatura_iva'];
-        $_SESSION['fognatura_lordo'] = $_POST['fognatura_lordo'];
+        $_SESSION['fognatura_s_gg'] = $_POST['fognatura_gg'];
+        $_SESSION['fognatura_s_netto'] = $_POST['fognatura_netto'];
+        $_SESSION['fognatura_s_iva'] = $_POST['fognatura_iva'];
+        $_SESSION['fognatura_s_lordo'] = $_POST['fognatura_lordo'];
         
-        $_SESSION['depurazione_gg'] = $_POST['depurazioni_gg'];
-        $_SESSION['depurazione_netto'] = $_POST['depurazioni_netto'];
-        $_SESSION['depurazione_iva'] = $_POST['depurazioni_iva'];
-        $_SESSION['depurazione_lordo'] = $_POST['depurazioni_lordo'];   
+        $_SESSION['depurazione_s_gg'] = $_POST['depurazioni_gg'];
+        $_SESSION['depurazione_s_netto'] = $_POST['depurazioni_netto'];
+        $_SESSION['depurazione_s_iva'] = $_POST['depurazioni_iva'];
+        $_SESSION['depurazione_s_lordo'] = $_POST['depurazioni_lordo'];   
 	
+        
+        
+        
+        $_SESSION['totale_lordo_fissi'] =  + doubleval($_SESSION['fognatura_s_lordo']) + doubleval($_SESSION['depurazione_s_lordo']) + doubleval($_SESSION['acqua_s_lordo']);
+       
+        
     header("Location: ./consumi.php");
+        
+        
         
     }
     else
@@ -104,7 +65,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
     <link rel="stylesheet" href="assets/css/Header-Dark.css">
     <link rel="stylesheet" href="assets/css/Pretty-Footer.css">
     <link rel="stylesheet" href="assets/css/Rounded-Button.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    
   
 <style>
     .table td{
@@ -168,10 +129,10 @@ if(isset($_POST['avanti']))			//se premo bottone registra
       <tbody>
         <tr>
           <th style="color: white; border-bottom: 1px solid white;">Acqua</th>
-          <td><input type='text' name='acqua_gg' placeholder='ES-150'/></td>
-          <td><input type='text' name='acqua_netto' placeholder='ES-160,00'/></td>
-          <td><input type='text' name='acqua_iva' placeholder='ES-10%'/></td>
-          <td><input type='text' name='acqua_lordo' value="" placeholder='ES-176,00'/></td>
+          <td><input type='text' name='acqua_gg' placeholder='ES-150' /></td>
+          <td><input type='text' name='acqua_netto' placeholder='ES-160,00' /></td>
+          <td><input type='text' name='acqua_iva' placeholder='ES-10%' /></td>
+          <td><input type='text' name='a_lordo' placeholder='ES-176,00' /></td>
         </tr>
         <tr>
           <th style="color: white; border-bottom: 1px solid white;">Fognatura</th>
@@ -197,7 +158,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
         <div class="container">
             <div class="row">
                 <div class="col-md-4"></div>
-                <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" type="submit" name="avanti" style="background:green;">AVANTI</button></div>
+                <div class="col-md-4 d-xl-flex align-items-xl-center"><button class="add" type='submit' name='avanti' style="background:green;">AVANTI</button></div>
                 <div class="col-md-4"></div>
             </div>
         </div>

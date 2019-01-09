@@ -9,42 +9,47 @@ if($_SESSION['accreditato'] == false){ // controllo se sia loggato
 
 if(isset($_POST['avanti']))			//se premo bottone registra
 {		
-    if($_POST['agevolata_gg'] <> "" and $_POST['agevolata_netto'] <> "" and $_POST['agevolata_iva'] <> "" and $_POST['agevolata_lordo'] <> "" and $_POST['base_gg'] <> "" and $_POST['base_netto'] <> "" and $_POST['base_iva'] <> "" and $_POST['base_lordo'] <> "" and $_POST['fascia_1_gg'] <> "" and $_POST['fascia_1_netto'] <> "" and $_POST['fascia_1_iva'] <> "" and $_POST['fascia_1_lordo'] <> "" and $_POST['fascia_2_gg'] <> "" and $_POST['fascia_2_netto'] <> "" and $_POST['fascia_2_iva'] <> "" and $_POST['fascia_2_lordo'] <> "" and $_POST['fascia_3_gg'] <> "" and $_POST['fascia_3_netto'] <> "" and $_POST['fascia_3_iva'] <> "" and $_POST['fascia_3_lordo'] <> "")		
+    if($_POST['agevolata_mc'] <> "" and $_POST['agevolata_netto'] <> "" and $_POST['agevolata_iva'] <> "" and $_POST['agevolata_lordo'] <> "" and $_POST['base_mc'] <> "" and $_POST['base_netto'] <> "" and $_POST['base_iva'] <> "" and $_POST['base_lordo'] <> "" and $_POST['fascia_1_mc'] <> "" and $_POST['fascia_1_netto'] <> "" and $_POST['fascia_1_iva'] <> "" and $_POST['fascia_1_lordo'] <> "" and $_POST['fascia_2_mc'] <> "" and $_POST['fascia_2_netto'] <> "" and $_POST['fascia_2_iva'] <> "" and $_POST['fascia_2_lordo'] <> "" and $_POST['fascia_3_mc'] <> "" and $_POST['fascia_3_netto'] <> "" and $_POST['fascia_3_iva'] <> "" and $_POST['fascia_3_lordo'] <> "")		
         
     {
 		
-		$_SESSION['agevolata_gg'] = $_POST['agevolata_gg'];               // ottengo il valore scritto nel campo di competenza e lo inserisco in variabili locali 
+		$_SESSION['agevolata_mc'] = $_POST['agevolata_mc'];               // ottengo il valore scritto nel campo di competenza e lo inserisco in variabili locali 
         $_SESSION['agevolata_netto'] = $_POST['agevolata_netto'];
         $_SESSION['agevolata_iva'] = $_POST['agevolata_iva'];
         $_SESSION['agevolata_lordo'] = $_POST['agevolata_lordo]'];
         
-        $_SESSION['base_gg'] = $_POST['base_gg'];
+        $_SESSION['base_mc'] = $_POST['base_mc'];
         $_SESSION['base_netto'] = $_POST['base_netto'];
         $_SESSION['base_iva'] = $_POST['base_iva'];
         $_SESSION['base_lordo'] = $_POST['base_lordo'];
         
-        $_SESSION['fascia_1_gg'] = $_POST['fascia_1_gg'];
+        $_SESSION['fascia_1_mc'] = $_POST['fascia_1_mc'];
         $_SESSION['fascia_1_netto'] = $_POST['fascia_1_netto'];
         $_SESSION['fascia_1_iva'] = $_POST['fascia_1_iva'];
         $_SESSION['fascia_1_lordo'] = $_POST['fascia_1_lordo'];   
         
-        $_SESSION['fascia_2_gg'] = $_POST['fascia_2_gg'];
+        $_SESSION['fascia_2_mc'] = $_POST['fascia_2_mc'];
         $_SESSION['fascia_2_netto'] = $_POST['fascia_2_netto'];
         $_SESSION['fascia_2_iva'] = $_POST['fascia_2_iva'];
         $_SESSION['fascia_2_lordo'] = $_POST['fascia_2_lordo']; 
         
-        $_SESSION['fascia_3_gg'] = $_POST['fascia_3_gg'];
+        $_SESSION['fascia_3_mc'] = $_POST['fascia_3_mc'];
         $_SESSION['fascia_3_netto'] = $_POST['fascia_3_netto'];
         $_SESSION['fascia_3_iva'] = $_POST['fascia_3_iva'];
         $_SESSION['fascia_3_lordo'] = $_POST['fascia_3_lordo']; 
-	
+        
+        $_SESSION['tot_mc_consumi'] = $_SESSION['agevolata_mc'] + $_SESSION['base_mc'] +  $_SESSION['fascia_1_mc'] + $_SESSION['fascia_2_mc'] +  $_SESSION['fascia_3_mc'];
+        
+	    $_SESSION['totale_lordo_consumi'] = $_SESSION['agevolata_lordo'] + $_SESSION['base_lordo'] + $_SESSION['fascia_1_lordo'] + $_SESSION['fascia_2_lordo'] + $_SESSION['fascia_3_lordo'];
+            
+            
     header("Location: ./quoteVariabili.php");
         
     }
     else{$_SESSION['debug'] = "Compila tutti i campi, impossibile creare account :(";}
     
 }
-   
+   echo $_SESSION['acqua_s_lordo'];
 ?>
 
 <!DOCTYPE html>
@@ -115,7 +120,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
       <thead>
         <tr>
           <th style="border:transparent"></th>
-          <th style="background-color: rgb(41,44,47); color:white;">GIORNI</th>
+          <th style="background-color: rgb(41,44,47); color:white;">MC</th>
           <th style="background-color: rgb(41,44,47); color:white;">IMPORTO NETTO</th>
           <th style="background-color: rgb(41,44,47); color:white;">ALIQUOTA IVA</th>
           <th style="background-color: rgb(41,44,47); color:white;">IMPORTO LORDO</th>
@@ -124,38 +129,38 @@ if(isset($_POST['avanti']))			//se premo bottone registra
       <tbody>
         <tr>
           <th style="color: white; border-bottom: 1px solid white;">Tariffa Agevolata</th>
-          <td><input type='text' name='agevolata_gg' placeholder='ES-150'/></td>
-          <td><input type='text' name='agevolata_netto' placeholder='ES-160,00'/></td>
+          <td><input type='text' name='agevolata_mc' placeholder='ES-150'/></td>
+          <td><input type='text' name='agevolata_netto' placeholder='ES-€75,00'/></td>
           <td><input type='text' name='agevolata_iva' placeholder='ES-10%'/></td>
-          <td><input type='text' name='agevolata_lordo' placeholder='ES-176,00'/></td>
+          <td><input type='text' name='agevolata_lordo' placeholder='ES-82,50'/></td>
         </tr>
         <tr>
           <th style="color: white; border-bottom: 1px solid white;">Tariffa Base</th>
-          <td><input type='text' name='base_gg' placeholder='ES-150'/></td>
-          <td><input type='text' name='base_netto' placeholder='ES-160,00'/></td>
+          <td><input type='text' name='base_mc' placeholder='ES-100'/></td>
+          <td><input type='text' name='base_netto' placeholder='ES-€100,00'/></td>
           <td><input type='text' name='base_iva' placeholder='ES-10%'/></td>
-          <td><input type='text' name='base_lordo' placeholder='ES-176,00'/></td>
+          <td><input type='text' name='base_lordo' placeholder='ES-110,00'/></td>
         </tr>
         <tr>
           <th style="color: white; border-bottom: 1px solid white;">Eccedenza fascia 1</th>
-          <td><input type='text' name='fascia_1_gg' placeholder='ES-150'/></td>
-          <td><input type='text' name='fascia_1_netto' placeholder='ES-160,00'/></td>
+          <td><input type='text' name='fascia_1_mc' placeholder='ES-30'/></td>
+          <td><input type='text' name='fascia_1_netto' placeholder='ES-€60,00'/></td>
           <td><input type='text' name='fascia_1_iva' placeholder='ES-10%'/></td>
-          <td><input type='text' name='fascia_1_lordo' placeholder='ES-176,00'/></td>
+          <td><input type='text' name='fascia_1_lordo' placeholder='ES-66,00'/></td>
         </tr>
         <tr>
           <th style="color: white; border-bottom: 1px solid white;">Eccedenza fascia 2</th>
-          <td><input type='text' name='fascia_2_gg' placeholder='ES-150'/></td>
-          <td><input type='text' name='fascia_2_netto' placeholder='ES-160,00'/></td>
+          <td><input type='text' name='fascia_2_mc' placeholder='ES-15'/></td>
+          <td><input type='text' name='fascia_2_netto' placeholder='ES-€45,00'/></td>
           <td><input type='text' name='fascia_2_iva' placeholder='ES-10%'/></td>
-          <td><input type='text' name='fascia_2_lordo' placeholder='ES-176,00'/></td>
+          <td><input type='text' name='fascia_2_lordo' placeholder='ES-49,50'/></td>
         </tr>
         <tr>
           <th style="color: white; border-bottom: 1px solid white;">Eccedenza fascia 3</th>
-          <td><input type='text' name='fascia_3_gg' placeholder='ES-150'/></td>
-          <td><input type='text' name='fascia_3_netto' placeholder='ES-160,00'/></td>
+          <td><input type='text' name='fascia_3_mc' placeholder='ES-5'/></td>
+          <td><input type='text' name='fascia_3_netto' placeholder='ES-€15,00'/></td>
           <td><input type='text' name='fascia_3_iva' placeholder='ES-10%'/></td>
-          <td><input type='text' name='fascia_3_lordo' placeholder='ES-176,00'/></td>
+          <td><input type='text' name='fascia_3_lordo' placeholder='ES-16,50'/></td>
         </tr>
       </tbody>
     </table>

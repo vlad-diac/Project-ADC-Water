@@ -17,7 +17,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
         $_SESSION['lettura_contatori'] = $_POST['lettura_contatori'];
         $_SESSION['altri_oneri'] = $_POST['altri_oneri'];
         
-        
+       $_SESSION['totale_costi_quoteuguali'] = $_SESSION['bolli'] + $_SESSION['depositi_cauzionali'] + $_SESSION['lettura_contatori'] + $_SESSION['altri_oneri'];
 
         
         

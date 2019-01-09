@@ -9,6 +9,8 @@ if($_SESSION['accreditato'] == false){ // controllo se sia loggato
 
 $contatore = 0;
 $somma_mc_consumo_periodico = 0;
+$somma_mc_erogati = 0;
+$importo_lordo_ripartizione=0;
 
 $statment_condomio = connect("test")->query("SELECT id_condominio FROM utenti_condominio WHERE id_condominio = '".$_SESSION['condominio_in_uso']."' ");
                       
@@ -16,6 +18,8 @@ $statment_condomio = connect("test")->query("SELECT id_condominio FROM utenti_co
                             
                             $contatore++;
                         }
+$_SESSION['num_utenti'] = $contatore;
+
 $statment_consumo = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$_SESSION['condominio_in_uso']."' ");
                       
                         while($rows = $statment_consumo->fetch(PDO::FETCH_NUM)){
@@ -23,6 +27,18 @@ $statment_consumo = connect("test")->query("SELECT * FROM utenti_condominio WHER
                             $somma_mc_consumo_periodico = $somma_mc_consumo_periodico + $rows[5];  // il campo consumo periodico -- iniziare da 0 a contare nel database   .... in poi ....
                         }
 
+$_SESSION['somma_mc_consumo_periodico'] = $somma_mc_consumo_periodico;
+
+$somma_mc_erogati = $_SESSION['tot_mc_consumi'];
+
+$_SESSION['importo_lordo_rip'] = doubleval($_SESSION['totale_lordo_fissi']) + doubleval($_SESSION['totale_lordo_consumi']) + doubleval($_SESSION['totale_lordo_variabili']) + doubleval($_SESSION['totale_costi_proporzioni']) + doubleval($_SESSION['totale_costi_quoteuguali']);
+
+$importo_lordo_ripartizione = $_SESSION['importo_lordo_rip'];
+
+if(isset($_POST['avanti'])){
+    
+    header("Location: ./pag_finale.php");
+}
 
 ?>
 
@@ -105,10 +121,10 @@ $statment_consumo = connect("test")->query("SELECT * FROM utenti_condominio WHER
       <tbody>
         <tr>
           
-          <td><input type='text' name='acqua_gg' value='<?php echo $contatore; ?>' readonly/></td>
-          <td><input type='text' name='acqua_netto' value='<?php echo $somma_mc_consumo_periodico; ?>' readonly/></td>
-          <td><input type='text' name='acqua_iva' placeholder='ES-10%' readonly/></td>
-          <td><input type='text' name='acqua_lordo'  readonly/></td>
+          <td><input type='text' name='num_utenti' value='<?php echo $contatore; ?>' readonly/></td>
+          <td><input type='text' name='mc_rilevati' value='<?php echo $somma_mc_consumo_periodico; ?>' readonly/></td>
+          <td><input type='text' name='mc_erogati' value='<?php echo $somma_mc_erogati;?>' readonly/></td>
+          <td><input type='text' name='tot_importo_ripartizione' value='<?php echo $importo_lordo_ripartizione?>'  readonly/></td>
         </tr>
        
       </tbody>

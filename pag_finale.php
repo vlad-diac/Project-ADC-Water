@@ -106,23 +106,38 @@ $partizioni_create = 0;
             $id = $_SESSION['condominio_in_uso'];
             $output = '';
             $totale = 0;
-                    $_SESSION['uno'] = 3;
-                    $_SESSION['due'] = 1;
+        
+          
+      
+                  $soglia_di_consumo = $_SESSION['agevolata_mc'] / $_SESSION['num_utenti'];
+                   $singolo_mc = $_SESSION['agevolata_lordo'] / ($soglia_di_consumo * $_SESSION['num_utenti']);
 
-                    $calcolo = intval($_SESSION['uno']) * intval($_SESSION['due']); // specificare il tipo di variabile
-          
-          
-             $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$id."'");
-                      
+                        $calcolo = doubleval($_SESSION['totale_lordo_variabili']) / doubleval($_SESSION['somma_mc_consumo_periodico']); // specificare il tipo di variabile
+
+                        $partiuguali = doubleval($_SESSION['totale_lordo_fissi']) / doubleval($_SESSION['num_utenti']);
+
+                        $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$id."'");
+
                         while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
+                            
+                            if($rows[5]<$soglia_di_consumo){
+                                $parziale_ta = $singolo_mc * $rows[5];
+                            }
+                            
+                            else{
+                                
+                                $parziale_ta = $singolo_mc * $soglia_di_consumo;
+                                
+                            }
+                            
                             $output .= ' <tr> <td><input type="text" value='.$rows[1].' /></td>';
                             
                             $totale += $rows[3] ;
                             
-                            $output .= ' <td><input  type="text"  value='.$rows[0].' /></td>
-                                        <td><input  type="text"  value='.$rows[3].' /></td>
-                                        <td><input  type="text" value='.($rows[3] - $calcolo).' /></td>
-                                        <td><input  type="text"/></td>
+                            $output .= ' <td><input  type="text"  value='.$rows[5].' /></td>
+                                        <td><input  type="text"  value='.$partiuguali.' /></td>
+                                        <td><input  type="text" value='.($rows[5] * $calcolo).' /></td>
+                                        <td><input  type="text" value='.$parziale_ta.' /></td>
 
                                         <td><input  type="text"/></td>
                                         <td><input  type="text"/></td>
