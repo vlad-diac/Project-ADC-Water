@@ -10,8 +10,278 @@ if($_SESSION['accreditato'] == false){ // controllo se sia loggato
 $contenuto = '';
 $partizioni_create = 0;
 
-
+$id = $_SESSION['condominio_in_uso'];
 ?>
+
+<?php
+
+
+
+function consumoTabella($id){ // ottengo i valori per i consumi
+    $consumi = array();
+    $i = 0;
+    $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$id."'");
+
+        for($i = 0; $i < $rows = $statment_condomio->fetch(PDO::FETCH_NUM); $i++){   
+
+            $consumi[$i] = $rows[5];
+
+
+
+        }
+
+            return $consumi;
+    
+}
+
+$consumi_array = consumoTabella($id);  // ritorno i consumi dentro un array
+//var_dump($consumi_array);
+
+
+
+
+function quotefisseTabella($totale_lordo, $contatore){ // ottengo il valore per le quote fisse
+     
+    $quoteFisse = $totale_lordo / $contatore;
+    
+    
+        return $quoteFisse;
+ 
+}
+
+
+ $quote_fisse = quotefisseTabella($_SESSION['totale_lordo_fissi'],$_SESSION['num_utenti']);  // ritorno la quota fissa in questa variabile
+//echo $quote_fisse;
+
+
+function quoteVariabili($totale_lordo,$somma_mc_periodico,$consumi){  // ottengo le quote variabili
+    
+        $quoteVariabili = array();
+        $i = 0;
+    
+            for($i = 0; $i < sizeof($consumi); $i++){
+
+                $quoteVariabili[$i] =   ($totale_lordo / $somma_mc_periodico) * $consumi[$i];
+
+            }
+
+                return $quoteVariabili;
+    
+    
+}
+
+$quoteVariabili_Array = quoteVariabili($_SESSION['totale_lordo_variabili'],$_SESSION['somma_mc_consumo_periodico'],$consumi_array);  // ottengo le queote varaibili dentro un array
+//var_dump($quoteVariabili_Array);
+
+    
+    
+function _TA_tabella_Rta($agevolata_mc,$consumi,$numero_utenti,$agevolata_lordo){ // ottengo i valori per TA e dopo lo faccio per tb con mc_TB
+    
+    //dichiaro variabili per TA
+    $i = 0;
+    $differenza_soglia_TA = 0;
+    $contatore_superamento_soglia_TA = 0;
+    $_TA = array();
+    $_var_mc_TB = array();
+    
+    // calcoli
+    @$soglia_consumo =  $agevolata_mc / $numero_utenti;  // @ overload per evitare errori di caldolo per la divisione per zero 
+    @$costo_singolo_mc = $agevolata_lordo / $agevolata_mc;
+    
+    
+   for($i = 0; $i < $numero_utenti; $i++){
+       
+       if($consumi[$i] < $soglia_consumo){
+           
+           $differenza_soglia_TA = $differenza_soglia_TA + ($soglia_consumo - $consumi[$i]); // operazione per chi non la supera, ottengo 1 valore alla fine...
+           
+       }else{
+           
+           $contatore_superamento_soglia_TA++; // incremento chi ha superato la soglia
+           
+       }
+   } 
+   
+    for($i = 0; $i < $numero_utenti; $i++){  // non toccare!!!
+        
+         if($consumi[$i] < $soglia_consumo){
+           
+           $_TA[$i] = $consumi[$i] * $costo_singolo_mc;  // valore da ritornare
+               
+       }else{
+           
+           $_TA[$i] = ($soglia_consumo + ($differenza_soglia_TA / $contatore_superamento_soglia_TA)) * $costo_singolo_mc;  // valore da ritornare
+          
+       }
+        
+    }
+    
+
+    
+    return $_TA;
+     
+    
+}  
+
+$TA_ = _TA_tabella_Rta($_SESSION['agevolata_mc'],$consumi_array,$_SESSION['num_utenti'],$_SESSION['agevolata_lordo']);    
+
+//var_dump($TA_);
+
+function _TA_tabella_Rtb($agevolata_mc,$consumi,$numero_utenti,$agevolata_lordo){  // OTTENGO VAR_MC_TB 
+       
+    //dichiaro variabili per TA
+    $i = 0;
+    $differenza_soglia_TA = 0;
+    $_SESSION['contatore_superamento_soglia_TA'] = 0;
+    $_TA = array();
+    $_var_mc_TB = array();
+    
+    // calcoli
+    @$soglia_consumo =  $agevolata_mc / $numero_utenti;  // @ overload per evitare errori di caldolo per la divisione per zero 
+    @$costo_singolo_mc = $agevolata_lordo / $agevolata_mc;
+    
+    
+   for($i = 0; $i < $numero_utenti; $i++){
+       
+       if($consumi[$i] < $soglia_consumo){
+           
+           $differenza_soglia_TA = $differenza_soglia_TA + ($soglia_consumo - $consumi[$i]); // operazione per chi non la supera, ottengo 1 valore alla fine...
+           
+       }else{
+           
+           $_SESSION['contatore_superamento_soglia_TA']++; // incremento chi ha superato la soglia
+           
+       }
+   } 
+   
+    for($i = 0; $i < $numero_utenti; $i++){  // non toccare!!!
+        
+         if($consumi[$i] < $soglia_consumo){
+           
+           $_var_mc_TB[$i] = $consumi[$i] - $consumi[$i];  // variabile usata per TB per il calcolo del mc   ++++++++++
+               
+       }else{
+           
+           $_var_mc_TB[$i] = $consumi[$i] - ($soglia_consumo + ($differenza_soglia_TA / $_SESSION['contatore_superamento_soglia_TA'])) ;   // variabile usata per TB per il calcolo del mc   ++++++++++
+       }
+        
+    }
+    
+
+    
+    return $_var_mc_TB;
+    
+    
+}
+
+
+$TB_mc = _TA_tabella_Rtb($_SESSION['agevolata_mc'],$consumi_array,$_SESSION['num_utenti'],$_SESSION['agevolata_lordo']);    
+
+//var_dump($TB_mc);
+
+
+function _TB_tabella($base_mc,$base_lordo,$mc_lordo,$_var_mc_TB,$numero_utenti){  // ottengo valori colonna TB
+    
+    //var
+    $differenza_soglia_TB = 0;
+    $i = 0;
+    $contatore_superamento_soglia_TB = 0;
+    $tb_array = array(); // sarà il mio output TB ARRAY
+    
+    //calcoli
+    @$soglia_consumo_tb =  $base_mc /  $_SESSION['contatore_superamento_soglia_TA'];  // @ overload per evitare errori di caldolo per la divisione per zero 
+    @$costo_singolo_mc_tb = $base_lordo / $mc_lordo;
+    
+    
+    for($i = 0; $i < $numero_utenti; $i++){  // non toccare!!!
+        if($_var_mc_TB[$i] != 0){
+            
+         if($_var_mc_TB[$i] < $soglia_consumo_tb){
+           
+               
+            $differenza_soglia_TB = $differenza_soglia_TB  + ($soglia_consumo_tb - $_var_mc_TB[$i]);
+             
+       }else{
+             
+            $contatore_superamento_soglia_TB++;
+           
+       }
+        
+    }
+        
+    }
+    
+    for($i = 0; $i < $numero_utenti; $i++){  //calcoli finali per tb
+        
+        if($_var_mc_TB[$i] == 0){
+            
+            $tb_array[$i] = 0;
+            
+        }else{
+
+         if($_var_mc_TB[$i] < $soglia_consumo_tb){
+           
+                $tb_array[$i] = $_var_mc_TB[$i] * $costo_singolo_mc_tb;  // valore da ritornare per tb
+               
+            }else{
+           
+                $tb_array[$i] = ($soglia_consumo_tb + ($differenza_soglia_TB / $contatore_superamento_soglia_TB)) * $costo_singolo_mc_tb;  // valore da ritornare
+          
+       
+        
+    }
+                 
+                 
+                 
+        }
+      
+        
+    }
+    
+    return $tb_array;
+}
+    
+    
+$TB_mc_output = _TB_tabella($_SESSION['base_mc'],$_SESSION['base_lordo'],$_SESSION['base_mc'],$TB_mc,$_SESSION['num_utenti']);
+
+//var_dump($TB_mc_asds);
+    
+ 
+ function stampaTabella($consumi_array,$quote_fisse,$quoteVariabili_Array,$TA_,$TB_mc_output,$id){
+    $output = '';
+    $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$id."'");
+    for($i = 0; $i< $rows = $statment_condomio->fetch(PDO::FETCH_NUM);$i++){                      
+
+
+                $output .= ' <tr> <td><input type="text" value='.$rows[1].' /></td>';
+                
+                    
+                    
+
+
+
+                $output .= ' <td><input  type="text"  value='.$consumi_array[$i].' /></td>
+                <td><input  type="text"  value='.$quote_fisse.' /></td>
+                <td><input  type="text" value='.round($quoteVariabili_Array[$i],2).' /></td>';
+                    $output  .= '<td><input  type="text" value='.round($TA_[$i],2).' /></td>'; 
+
+                $output  .= '<td><input  type="text" value='.$TB_mc_output[$i].' /></td>
+                <td><input  type="text"  /></td>
+                <td><input  type="text"/></td>
+                <td><input  type="text"/></td>
+
+                <td><input  type="text"/></td>
+                <td><input  type="text"/></td>
+                <td><input  type="text"/></td>
+                <td><input  type="text"/></td>
+                <td><input  type="text"  /></td>                                      
+                </tr>';     
+
+                }
+    
+    echo $output;
+               
+}
 
 <!DOCTYPE html>
 <html>
@@ -103,219 +373,8 @@ $partizioni_create = 0;
       <tbody>
        
           <?php
-            $id = $_SESSION['condominio_in_uso'];
-            $output = '';
-            $MC_TA_rimanenti = 0;
-            $var_soglia = 0;          
-            $contatore = 0;
-            $totale_quote_var = 0;
-            $totale_quote_var_ext = 0.0;          
-            $somma_prova_oriz = 0;
-            $diviso = 0;
-            $ta=0;
-            $parziale_ta_ext=0;
-            $contatore_tb=0;
-          $tb_ext=0.0;
-         $contatore_tb_mc_rimanente=0;
-          
-            $soglia_di_consumo = doubleval($_SESSION['agevolata_mc']) / doubleval($_SESSION['num_utenti']);
             
-          
-            $singolo_mc = doubleval($_SESSION['agevolata_lordo']) / (doubleval($soglia_di_consumo) * doubleval($_SESSION['num_utenti']));
-
-            @$calcolo = doubleval($_SESSION['totale_lordo_variabili']) / doubleval($_SESSION['somma_mc_consumo_periodico']); // specificare il tipo di variabile
-
-            $partiuguali = doubleval($_SESSION['totale_lordo_fissi']) / doubleval($_SESSION['num_utenti']);
-          
-            $MC_TA = doubleval($_SESSION['agevolata_mc']);
-
-            $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$id."'");         
-          
-          
-          
-            while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
-
-                $contatore++;
-
-                if($rows[5]>$soglia_di_consumo){
-
-                    $var_soglia += $soglia_di_consumo;
-                    $diviso++;
-                    $contatore_tb++;}
-                
-                else{
-                    
-                    $var_soglia += $rows[5];}
-
-            }
-          
-          
-          
-            $quota_clc = $partiuguali*$contatore;
-
-
-            $MC_TA_rimanenti = (doubleval($MC_TA) - doubleval($var_soglia)) / intval($diviso);
-          
-            $soglia_di_consumo_tb = doubleval($_SESSION['base_mc']) / intval($contatore_tb);
-          
-            $var_TA = $soglia_di_consumo + $MC_TA_rimanenti;
-            $singolo_mc_tb = doubleval($_SESSION['base_lordo']) / (doubleval($soglia_di_consumo_tb) * doubleval($contatore_tb));
-
-            $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$id."'");
-          
-            
-            while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
-
-
-                            if(($rows[5]-($soglia_di_consumo+$soglia_di_consumo_tb))>0){
-
-                               
-                                $contatore_tb_mc_rimanente++;}
-
-            }
-          
- $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$id."'");
-          
-            while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){                      
-
-                $totale_quote_var =  ($rows[5] * $calcolo);
-                $totale_quote_var_ext += $totale_quote_var;
-
-                $somma_prova_oriz = doubleval($rows[5]) + doubleval($partiuguali) + doubleval($totale_quote_var);
-                
-                $dentro = $rows[5];
-                
-                
-                            
-                           
-                              //     ($partiugual * 100)/$quota_clc
-                                
-                            
-                            
-                            
-                            if($rows[5]>$soglia_di_consumo){
-                                
-                              $ta = $var_TA * $singolo_mc;  
-                               
-                              $parziale_ta_ext += $ta;   
-                            
-                                $dentro -= $var_TA;
-                                
-                            }
-               else{
-                                
-                                
-                                $ta = $singolo_mc * $rows[5];
-                                $parziale_ta_ext += $ta;
-                                $dentro -= $rows[5];
-                              
-                            }
-                            
-                                              
-                
-                $mc_tb = $dentro;
-                
-//                            if($dentro=0){
-//                                
-//                                $tb=0.00;}
-//                
-//                            else if($dentro!=0){
-//                                
-//                                if($dentro <= $soglia_di_consumo_tb){
-//                                    $tb = $singolo_mc_tb * $mc_tb;
-//                                    $tb_ext += $tb;
-//                                    $dentro -= $mc_tb;
-//                                }
-//                    
-//                                else if($dentro > $soglia_di_consumo_tb){
-//                                    
-//                                    $tb = ($soglia_di_consumo_tb+$eccedenza) * $singolo_mc_tb;  
-//
-//                                    $tb_ext += $tb;   
-//
-//                                    $dentro -= ($soglia_di_consumo_tb+$eccedenza);
-//                                }
-//                            }
-//                
-                
-                
-               if($dentro > $soglia_di_consumo_tb){
-                                
-                              $tb = $soglia_di_consumo_tb * $singolo_mc_tb;  
-                               
-                              $tb_ext += $tb;   
-                                
-                            $dentro -= $soglia_di_consumo_tb;
-                                
-                            }
-               else{
-                            
-                 if($dentro == 0){   
-                     
-                                $tb=0.00;
-                 }
-                   else if($dentro<$soglia_di_consumo_tb){
-                                $tb = $singolo_mc_tb * $mc_tb;
-                                $tb_ext += $tb;
-                                $dentro -= $mc_tb;
-                               //variabile =variabile + (soglia_di_consumo_tb-$dentro)
-                              
-                            }}
-      
-
-                $output .= ' <tr> <td><input type="text" value='.$rows[1].' /></td>';
-                
-                    
-                    
-
-
-
-                $output .= ' <td><input  type="text"  value='.$rows[5].' /></td>
-                <td><input  type="text"  value='.$partiuguali.' /></td>
-                <td><input  type="text" value='.round($totale_quote_var,2).' /></td>';
-                    $output  .= '<td><input  type="text" value='.round($ta,2).' /></td>'; 
-
-                $output  .= '<td><input  type="text" value='.$tb.' /></td>
-                <td><input  type="text" value='.$contatore_tb_mc_rimanente.' /></td>
-                <td><input  type="text"/></td>
-                <td><input  type="text"/></td>
-
-                <td><input  type="text"/></td>
-                <td><input  type="text"/></td>
-                <td><input  type="text"/></td>
-                <td><input  type="text"/></td>
-                <td><input  type="text" value='.$somma_prova_oriz.' /></td>                                      
-                </tr>';     
-
-                }
-               
-                
-                        
-            //value="%: '.($partiuguali * 100)/$quota_clc.'"
-          
-          $output  .= ' <td><b><input  type="text"  value="TOTALE"  /></b></td>
-                                        <td><input  type="text"  /></td>
-                                        <td><input  type="text"  value='.$quota_clc.'  /></td>
-                                        <td><input  type="text" value='.$totale_quote_var_ext.' /></td>
-
-                                        <td><input  type="text" value='.$parziale_ta_ext.' /></td>
-                                        <td><input  type="text" value='.$tb_ext.' /></td>
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text" /></td>
-                                        </tr>';
-                        
-          
-          echo $output;
-          
-     
-     
+     stampaTabella($consumi_array,$quote_fisse,$quoteVariabili_Array,$TA_,$TB_mc_output,$id);
         
             
             ?>
