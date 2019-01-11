@@ -2,6 +2,7 @@
 require("./connection_database.php");
 session_start();
 $error = 0;
+$contatore = 0;
     if($_SESSION['accreditato'] == false){ // controllo se sia loggato
 
         header("Location: ./index.php");
@@ -52,7 +53,13 @@ $error = 0;
 
     }
 
-
+$statment_condomio = connect("test")->query("SELECT id_condominio FROM utenti_condominio WHERE id_condominio = '".$_SESSION['condominio_in_uso']."' ");
+                      
+                        while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
+                            
+                            $contatore++;
+                        }
+$_SESSION['num_utenti'] = $contatore;
 ?>
 
 

@@ -33,7 +33,7 @@ $somma_mc_erogati = $_SESSION['tot_mc_consumi'];
 
 $_SESSION['importo_lordo_rip'] = doubleval($_SESSION['totale_lordo_fissi']) + doubleval($_SESSION['totale_lordo_consumi']) + doubleval($_SESSION['totale_lordo_variabili']) + doubleval($_SESSION['totale_costi_proporzioni']) + doubleval($_SESSION['totale_costi_quoteuguali']);
 
-$importo_lordo_ripartizione = $_SESSION['importo_lordo_rip'];
+$importo_lordo_ripartizione = doubleval($_SESSION['importo_lordo_rip']);
 
 if(isset($_POST['avanti'])){
     

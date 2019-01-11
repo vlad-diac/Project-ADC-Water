@@ -105,62 +105,201 @@ $partizioni_create = 0;
           <?php
             $id = $_SESSION['condominio_in_uso'];
             $output = '';
-            $totale = 0;
-        
+            $MC_TA_rimanenti = 0;
+            $var_soglia = 0;          
+            $contatore = 0;
+            $totale_quote_var = 0;
+            $totale_quote_var_ext = 0.0;          
+            $somma_prova_oriz = 0;
+            $diviso = 0;
+            $ta=0;
+            $parziale_ta_ext=0;
+            $contatore_tb=0;
+          $tb_ext=0.0;
+         $contatore_tb_mc_rimanente=0;
           
-      
-                  $soglia_di_consumo = $_SESSION['agevolata_mc'] / $_SESSION['num_utenti'];
-                   $singolo_mc = $_SESSION['agevolata_lordo'] / ($soglia_di_consumo * $_SESSION['num_utenti']);
-
-                        $calcolo = doubleval($_SESSION['totale_lordo_variabili']) / doubleval($_SESSION['somma_mc_consumo_periodico']); // specificare il tipo di variabile
-
-                        $partiuguali = doubleval($_SESSION['totale_lordo_fissi']) / doubleval($_SESSION['num_utenti']);
-
-                        $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$id."'");
-
-                        while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
-                            
-                            if($rows[5]<$soglia_di_consumo){
-                                $parziale_ta = $singolo_mc * $rows[5];
-                            }
-                            
-                            else{
-                                
-                                $parziale_ta = $singolo_mc * $soglia_di_consumo;
-                                
-                            }
-                            
-                            $output .= ' <tr> <td><input type="text" value='.$rows[1].' /></td>';
-                            
-                            $totale += $rows[3] ;
-                            
-                            $output .= ' <td><input  type="text"  value='.$rows[5].' /></td>
-                                        <td><input  type="text"  value='.$partiuguali.' /></td>
-                                        <td><input  type="text" value='.($rows[5] * $calcolo).' /></td>
-                                        <td><input  type="text" value='.$parziale_ta.' /></td>
-
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text" /></td>
-                                        </tr>';
-                            
-                        }
+            $soglia_di_consumo = doubleval($_SESSION['agevolata_mc']) / doubleval($_SESSION['num_utenti']);
             
-          $output  .= ' <td><b><input  type="text"  value="TOTALE" /></b></td>
-                                        <td><input  type="text"  /></td>
-                                        <td><input  type="text"  value='.$totale.'  /></td>
-                                        <td><input  type="text"/></td>
+          
+            $singolo_mc = doubleval($_SESSION['agevolata_lordo']) / (doubleval($soglia_di_consumo) * doubleval($_SESSION['num_utenti']));
 
-                                        <td><input  type="text"/></td>
-                                        <td><input  type="text"/></td>
+            @$calcolo = doubleval($_SESSION['totale_lordo_variabili']) / doubleval($_SESSION['somma_mc_consumo_periodico']); // specificare il tipo di variabile
+
+            $partiuguali = doubleval($_SESSION['totale_lordo_fissi']) / doubleval($_SESSION['num_utenti']);
+          
+            $MC_TA = doubleval($_SESSION['agevolata_mc']);
+
+            $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$id."'");         
+          
+          
+          
+            while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
+
+                $contatore++;
+
+                if($rows[5]>$soglia_di_consumo){
+
+                    $var_soglia += $soglia_di_consumo;
+                    $diviso++;
+                    $contatore_tb++;}
+                
+                else{
+                    
+                    $var_soglia += $rows[5];}
+
+            }
+          
+          
+          
+            $quota_clc = $partiuguali*$contatore;
+
+
+            $MC_TA_rimanenti = (doubleval($MC_TA) - doubleval($var_soglia)) / intval($diviso);
+          
+            $soglia_di_consumo_tb = doubleval($_SESSION['base_mc']) / intval($contatore_tb);
+          
+            $var_TA = $soglia_di_consumo + $MC_TA_rimanenti;
+            $singolo_mc_tb = doubleval($_SESSION['base_lordo']) / (doubleval($soglia_di_consumo_tb) * doubleval($contatore_tb));
+
+            $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$id."'");
+          
+            
+            while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){
+
+
+                            if(($rows[5]-($soglia_di_consumo+$soglia_di_consumo_tb))>0){
+
+                               
+                                $contatore_tb_mc_rimanente++;}
+
+            }
+          
+ $statment_condomio = connect("test")->query("SELECT * FROM utenti_condominio WHERE id_condominio = '".$id."'");
+          
+            while($rows = $statment_condomio->fetch(PDO::FETCH_NUM)){                      
+
+                $totale_quote_var =  ($rows[5] * $calcolo);
+                $totale_quote_var_ext += $totale_quote_var;
+
+                $somma_prova_oriz = doubleval($rows[5]) + doubleval($partiuguali) + doubleval($totale_quote_var);
+                
+                $dentro = $rows[5];
+                
+                
+                            
+                           
+                              //     ($partiugual * 100)/$quota_clc
+                                
+                            
+                            
+                            
+                            if($rows[5]>$soglia_di_consumo){
+                                
+                              $ta = $var_TA * $singolo_mc;  
+                               
+                              $parziale_ta_ext += $ta;   
+                            
+                                $dentro -= $var_TA;
+                                
+                            }
+               else{
+                                
+                                
+                                $ta = $singolo_mc * $rows[5];
+                                $parziale_ta_ext += $ta;
+                                $dentro -= $rows[5];
+                              
+                            }
+                            
+                                              
+                
+                $mc_tb = $dentro;
+                
+//                            if($dentro=0){
+//                                
+//                                $tb=0.00;}
+//                
+//                            else if($dentro!=0){
+//                                
+//                                if($dentro <= $soglia_di_consumo_tb){
+//                                    $tb = $singolo_mc_tb * $mc_tb;
+//                                    $tb_ext += $tb;
+//                                    $dentro -= $mc_tb;
+//                                }
+//                    
+//                                else if($dentro > $soglia_di_consumo_tb){
+//                                    
+//                                    $tb = ($soglia_di_consumo_tb+$eccedenza) * $singolo_mc_tb;  
+//
+//                                    $tb_ext += $tb;   
+//
+//                                    $dentro -= ($soglia_di_consumo_tb+$eccedenza);
+//                                }
+//                            }
+//                
+                
+                
+               if($dentro > $soglia_di_consumo_tb){
+                                
+                              $tb = $soglia_di_consumo_tb * $singolo_mc_tb;  
+                               
+                              $tb_ext += $tb;   
+                                
+                            $dentro -= $soglia_di_consumo_tb;
+                                
+                            }
+               else{
+                            
+                 if($dentro == 0){   
+                     
+                                $tb=0.00;
+                 }
+                   else if($dentro<$soglia_di_consumo_tb){
+                                $tb = $singolo_mc_tb * $mc_tb;
+                                $tb_ext += $tb;
+                                $dentro -= $mc_tb;
+                               //variabile =variabile + (soglia_di_consumo_tb-$dentro)
+                              
+                            }}
+      
+
+                $output .= ' <tr> <td><input type="text" value='.$rows[1].' /></td>';
+                
+                    
+                    
+
+
+
+                $output .= ' <td><input  type="text"  value='.$rows[5].' /></td>
+                <td><input  type="text"  value='.$partiuguali.' /></td>
+                <td><input  type="text" value='.round($totale_quote_var,2).' /></td>';
+                    $output  .= '<td><input  type="text" value='.round($ta,2).' /></td>'; 
+
+                $output  .= '<td><input  type="text" value='.$tb.' /></td>
+                <td><input  type="text" value='.$contatore_tb_mc_rimanente.' /></td>
+                <td><input  type="text"/></td>
+                <td><input  type="text"/></td>
+
+                <td><input  type="text"/></td>
+                <td><input  type="text"/></td>
+                <td><input  type="text"/></td>
+                <td><input  type="text"/></td>
+                <td><input  type="text" value='.$somma_prova_oriz.' /></td>                                      
+                </tr>';     
+
+                }
+               
+                
+                        
+            //value="%: '.($partiuguali * 100)/$quota_clc.'"
+          
+          $output  .= ' <td><b><input  type="text"  value="TOTALE"  /></b></td>
+                                        <td><input  type="text"  /></td>
+                                        <td><input  type="text"  value='.$quota_clc.'  /></td>
+                                        <td><input  type="text" value='.$totale_quote_var_ext.' /></td>
+
+                                        <td><input  type="text" value='.$parziale_ta_ext.' /></td>
+                                        <td><input  type="text" value='.$tb_ext.' /></td>
                                         <td><input  type="text"/></td>
                                         <td><input  type="text"/></td>
 
@@ -176,8 +315,8 @@ $partizioni_create = 0;
           echo $output;
           
      
-            
-          
+     
+        
             
             ?>
             

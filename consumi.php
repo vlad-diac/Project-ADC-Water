@@ -16,31 +16,31 @@ if(isset($_POST['avanti']))			//se premo bottone registra
 		$_SESSION['agevolata_mc'] = $_POST['agevolata_mc'];               // ottengo il valore scritto nel campo di competenza e lo inserisco in variabili locali 
         $_SESSION['agevolata_netto'] = $_POST['agevolata_netto'];
         $_SESSION['agevolata_iva'] = $_POST['agevolata_iva'];
-        $_SESSION['agevolata_lordo'] = $_POST['agevolata_lordo]'];
+        $_SESSION['agevolata_lordo'] = doubleval($_POST['agevolata_lordo']);
         
         $_SESSION['base_mc'] = $_POST['base_mc'];
         $_SESSION['base_netto'] = $_POST['base_netto'];
         $_SESSION['base_iva'] = $_POST['base_iva'];
-        $_SESSION['base_lordo'] = $_POST['base_lordo'];
+        $_SESSION['base_lordo'] = doubleval($_POST['base_lordo']);
         
         $_SESSION['fascia_1_mc'] = $_POST['fascia_1_mc'];
         $_SESSION['fascia_1_netto'] = $_POST['fascia_1_netto'];
         $_SESSION['fascia_1_iva'] = $_POST['fascia_1_iva'];
-        $_SESSION['fascia_1_lordo'] = $_POST['fascia_1_lordo'];   
+        $_SESSION['fascia_1_lordo'] = doubleval($_POST['fascia_1_lordo']);   
         
         $_SESSION['fascia_2_mc'] = $_POST['fascia_2_mc'];
         $_SESSION['fascia_2_netto'] = $_POST['fascia_2_netto'];
         $_SESSION['fascia_2_iva'] = $_POST['fascia_2_iva'];
-        $_SESSION['fascia_2_lordo'] = $_POST['fascia_2_lordo']; 
+        $_SESSION['fascia_2_lordo'] = doubleval($_POST['fascia_2_lordo']); 
         
         $_SESSION['fascia_3_mc'] = $_POST['fascia_3_mc'];
         $_SESSION['fascia_3_netto'] = $_POST['fascia_3_netto'];
         $_SESSION['fascia_3_iva'] = $_POST['fascia_3_iva'];
-        $_SESSION['fascia_3_lordo'] = $_POST['fascia_3_lordo']; 
+        $_SESSION['fascia_3_lordo'] = doubleval($_POST['fascia_3_lordo']); 
         
         $_SESSION['tot_mc_consumi'] = $_SESSION['agevolata_mc'] + $_SESSION['base_mc'] +  $_SESSION['fascia_1_mc'] + $_SESSION['fascia_2_mc'] +  $_SESSION['fascia_3_mc'];
         
-	    $_SESSION['totale_lordo_consumi'] = $_SESSION['agevolata_lordo'] + $_SESSION['base_lordo'] + $_SESSION['fascia_1_lordo'] + $_SESSION['fascia_2_lordo'] + $_SESSION['fascia_3_lordo'];
+	    $_SESSION['totale_lordo_consumi'] = doubleval($_SESSION['agevolata_lordo']) + doubleval($_SESSION['base_lordo']) + doubleval($_SESSION['fascia_1_lordo']) + doubleval($_SESSION['fascia_2_lordo']) + doubleval($_SESSION['fascia_3_lordo']);
             
             
     header("Location: ./quoteVariabili.php");
@@ -49,7 +49,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
     else{$_SESSION['debug'] = "Compila tutti i campi, impossibile creare account :(";}
     
 }
-   echo $_SESSION['acqua_s_lordo'];
+
 ?>
 
 <!DOCTYPE html>

@@ -17,7 +17,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
 		$_SESSION['acqua_s_gg'] = $_POST['acqua_gg'];               // ottengo il valore scritto nel campo di competenza e lo inserisco in variabili locali 
         $_SESSION['acqua_s_netto'] = $_POST['acqua_netto'];
         $_SESSION['acqua_s_iva'] = $_POST['acqua_iva'];
-        $_SESSION['acqua_s_lordo'] = $_POST['a_lordo]'];
+        $_SESSION['acqua_s_lordo'] = $_POST['a_lordo'];
         
         $_SESSION['fognatura_s_gg'] = $_POST['fognatura_gg'];
         $_SESSION['fognatura_s_netto'] = $_POST['fognatura_netto'];
@@ -32,7 +32,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
         
         
         
-        $_SESSION['totale_lordo_fissi'] =  + doubleval($_SESSION['fognatura_s_lordo']) + doubleval($_SESSION['depurazione_s_lordo']) + doubleval($_SESSION['acqua_s_lordo']);
+        $_SESSION['totale_lordo_fissi'] = doubleval($_SESSION['fognatura_s_lordo']) + doubleval($_SESSION['depurazione_s_lordo']) + doubleval($_SESSION['acqua_s_lordo']);
        
         
     header("Location: ./consumi.php");

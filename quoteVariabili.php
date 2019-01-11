@@ -51,7 +51,7 @@ if(isset($_POST['avanti']))			//se premo bottone registra
         
 	}
 }
-echo $_SESSION['tot_mc_consumi'];
+
 ?>
 
 <!DOCTYPE html>
